@@ -1,10 +1,5 @@
 import data from '../data/users';
 
-// const JWT = require('jsonwebtoken');
-// const bycrypt = require('bcryptjs')
-// require ('dotenv').config();
-
-
 const newID = () => {
   let id;
   if (data.length > 0) {
@@ -23,10 +18,10 @@ const authController = {
       password: req.body.password,
       id: newID(),
     };
-    const userExists = data.find((info) => info.id === newUser.id);
+    const userExists = data.find((user) => user.email === newUser.email);
     if (!userExists) {
       data.push(newUser);
-      res.status(201).json({ message: 'you are now signed up' });
+      res.status(201).json(newUser);
     } else {
       res.status(400).json({ error: 'user already exists' });
     }
