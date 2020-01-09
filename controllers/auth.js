@@ -10,20 +10,24 @@ const newID = () => {
   return id;
 };
 
+
 const authController = {
   signup: (req, res) => {
-    const newUser = {
-      name: req.body.name,
+    const user = {
       email: req.body.email,
-      password: req.body.password,
-      id: newID(),
     };
-    const userExists = data.find((user) => user.email === newUser.email);
-    if (!userExists) {
+    const userExists = data.find((info) => info.email === user.email);
+    if (userExists) {
+      res.status(400).json({ error: 'user already exists' });
+    } else {
+      const newUser = {
+        name: req.body.name,
+        email: req.body.email,
+        password: req.body.password,
+        id: newID(),
+      };
       data.push(newUser);
       res.status(201).json(newUser);
-    } else {
-      res.status(400).json({ error: 'user already exists' });
     }
   },
 };
