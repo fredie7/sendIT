@@ -1,4 +1,4 @@
-const data = require('../data/users.json')
+const data = require('../data/users')
 
 // exports.newID = (data)=> {
 //   let id;
