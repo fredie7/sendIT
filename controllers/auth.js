@@ -13,10 +13,7 @@ const newID = () => {
 
 const authController = {
   signup: (req, res) => {
-    const user = {
-      email: req.body.email,
-    };
-    const userExists = data.find((info) => info.email === user.email);
+    const userExists = data.find((info) => info.email === req.body.email);
     if (userExists) {
       res.status(400).json({ error: 'user already exists' });
     } else {
