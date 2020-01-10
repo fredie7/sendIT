@@ -1,5 +1,10 @@
 import data from '../data/users';
 
+const jwt = require('jsonwebtoken');
+const jwtSecretKey = require('dotenv').config();
+
+const jwtExpiryTime = 300;
+
 const newID = () => {
   let id;
   if (data.length > 0) {
@@ -26,5 +31,24 @@ const authController = {
       res.status(400).json({ error: 'user already exists' });
     }
   },
+
+  signin: (req, res) => {
+    const incomingUser = {
+      email: req.body.email,
+      password: req.body.password,
+    };
+    const { email } = incomingUser;
+    const existingUser = data.find((user) => incomingUser.email === user.email);
+    if (existingUser) {
+      res.status(200).json({ message: 'user exists' });
+      const token = jwt.sign({ email }, jwtSecretKey, {
+        expiresIn: jwtExpiryTime,
+      })
+      res.cookie('token', token, { maxAge: jwtExpiryTime * 1000 });
+      res.end();
+    } else {
+      res.status(400).json({ error: 'user does not exist' });
+    }
+  }
 };
 export default authController;
