@@ -2,12 +2,14 @@ import express from 'express';
 
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
+const expressValidator = require('express-validator');
 
 const app = express();
 
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(morgan('dev'));
+app.use(expressValidator());
 
 const authRoute = require('./routers/auth');
 
