@@ -20,7 +20,7 @@ const authController = {
   signup: (req, res) => {
     const userExists = data.find((user) => user.email === req.body.email);
     if (userExists) {
-      return res.status(401).json({ error: 'user already exists' });
+      return res.status(409).json({ error: 'user already exists' });
     }
     const newUser = {
       name: req.body.name,
@@ -35,7 +35,7 @@ const authController = {
   signin: (req, res) => {
     const existingUser = data.find((user) => user.email === req.body.email);
     if (!existingUser) {
-      return res.status(401).json({ error: 'user does not exist' });
+      return res.status(409).json({ error: 'user does not exist' });
     }
     const { email } = req.body.email;
     const token = jwt.sign({ email }, jwtSecretKey, {

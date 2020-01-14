@@ -1,4 +1,4 @@
-const validate = {
+const validator = {
   signupValidator: (req, res, next) => {
     req.check('email', 'fill in email field').notEmpty();
     req.check('email').isLength({ min: 4, max: 150 }).withMessage('email must contain between 4 - 150 characters');
@@ -26,4 +26,4 @@ const validate = {
     next();
   },
 };
-export default validate;
+export default validator;
