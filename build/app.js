@@ -29,7 +29,7 @@ app.get('/', function (req, res) {
     mesage: 'app started......'
   });
 });
-var PORT = process.env.PORT || 7000;
+var PORT = 7000;
 app.listen(PORT, function () {
   console.log("listening on port ".concat(PORT));
 });
