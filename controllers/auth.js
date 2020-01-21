@@ -33,7 +33,7 @@ const authController = {
   },
 
   signin: (req, res) => {
-    const existingUser = data.find((user) => user.email === req.body.email);
+    const existingUser = data.find((user) => user.email === req.body.email && user.password === req.body.password);
     if (!existingUser) {
       return res.status(401).json({ error: 'user does not exist' });
     }
