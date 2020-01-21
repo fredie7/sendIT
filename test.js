@@ -6,13 +6,14 @@ const chai = require('chai');
 // const chaiHttp = require('chai-http');
 
 chai.use(chaiHttp);
-
+chai.should();
 const { expect } = chai;
 const should = chai.should();
+const request = chai.request(app);
 
 
-describe.skip('/api/v1/auth/signup', () => {
-  it.skip('should return a status code of 201', (done) => {
+describe('/api/v1/auth/signup', () => {
+  it('should return a status code of 201', (done) => {
     const user = {
       name: 'emma',
       email: 'emma@test.com',
@@ -31,29 +32,24 @@ describe.skip('/api/v1/auth/signup', () => {
   });
 });
 
-describe('/api/v1/auth/signup', () => {
-  it('should return a status code of 201', (done) => {
-    const user = {
-      name: 'emma',
-      email: 'emma@test.com',
-      password: 'emmapassword1',
-    };
-    chai.request(app)
-      .post('/api/v1/auth/signup')
-      .send(user)
-      .end((err, res) => {
-        expect(res).to.have.status(201);
-        // expect(res.email).to.exist;
-      });
-    done();
-  });
-});
 
 describe('/api/v1/auth/signin', () => {
+  let newUser = {
+    name: 'emma',
+    email: 'emma@test.com',
+    password: 'emmapassword1',
+  };
+  before((done) => {
+    request.post('/api/v1/auth/signup')
+      .send(newUser)
+      .end((err, res) => {
+        done();
+      });
+  });
   it('should return a status code of 200', (done) => {
     const user = {
-      email: 'emma@test.com',
-      password: 'emmapassword1',
+      email: newUser.email,
+      password: newUser.password,
     };
     chai.request(app)
       .post('/api/v1/auth/signin')
@@ -69,38 +65,91 @@ describe('/api/v1/auth/signin', () => {
 });
 
 describe('/api/v1/auth/signin', () => {
+  let newUser = {
+    name: 'emma',
+    email: 'emma@test.com',
+    password: 'emmapassword1',
+  };
+  before((done) => {
+    request.post('api/v1/auth/signup')
+      .send(newUser)
+      .end((err, res) => {
+        done();
+      });
+  });
   it('password must contain a digit character', (done) => {
     const user = {
-      email: 'emma@test.com',
+      email: newUser.email,
       password: 'emmapassword',
     };
     chai.request(app)
       .post('/api/v1/auth/signin')
       .send(user)
       .end((err, res) => {
-        res.should.have.status(400);
+        res.should.have.status(401);
         res.body.should.be.a('object');
         res.body.should.have.property('error').eql('password must contain digit character');
+        res.body.should.have.property('error').eql('user does not exist');
         done();
       });
   });
 });
 
-describe.skip('/api/v1/auth/signin', () => {
-  it.skip('should have a password', (done) => {
+describe('/api/v1/auth/signin', () => {
+  let newUser = {
+    name: 'emma',
+    email: 'emma@test.com',
+    password: 'emmapassword1',
+  };
+  before((done) => {
+    request.post('api/v1/auth/signup')
+      .send(newUser)
+      .end((err, res) => {
+        done();
+      });
+  });
+  it('fails when password is not provided', (done) => {
     const user = {
-      email: 'ema@test.com',
+      email: newUser.email,
       password: '',
     };
     chai.request(app)
       .post('api/v1/auth/signin')
       .send(user)
       .end((err, res) => {
-        res.should.have.status(401);
+        res.should.have.status(422);
         res.body.should.be.a('object');
-        res.body.should.have.a.property('error');
-        res.body.error.should.have.property('password');
+        res.body.should.have.a.property('error').eql('password must contain at least 6 characters');
         done();
       });
   });
 });
+
+describe('/api/v1/auth/signin', () => {
+  let newUser = {
+    name: 'emma',
+    email: 'emma@test.com',
+    password: 'emmapassword1',
+  }
+  before((done) => {
+    request.post('/api/v1/auth/signup')
+      .send(newUser)
+      .end((err, res) => {
+        done();
+      });
+  });
+  it('fails on wrong user credentials', (done) => {
+    const user = {
+      email: 'emma@test.com',
+      password: 'jdkhbvnbmnbb',
+    };
+    chai.request(app)
+      .post('api/v1/auth/signin')
+      .send(user)
+      .end((err, res) => {
+        res.should.have.status(401);
+        res.should.have.property('error').eql('user does not exist');
+        done();
+      })
+  })
+})

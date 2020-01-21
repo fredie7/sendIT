@@ -8,7 +8,7 @@ const validator = {
     const errors = req.validationErrors();
     if (errors) {
       const firstError = errors.map((err) => err.msg)[0];
-      return res.status(400).json({ error: firstError });
+      return res.status(422).json({ error: firstError });
     }
     next();
   },
@@ -21,7 +21,7 @@ const validator = {
     const errors = req.validationErrors();
     if (errors) {
       const firstError = errors.map((err) => err.msg)[0];
-      return res.status(400).json({ error: firstError });
+      return res.status(422).json({ error: firstError });
     }
     next();
   },
