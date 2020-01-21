@@ -128,4 +128,21 @@ describe('/api/v1/auth/signin', () => {
         done();
       });
   });
+
+  it('email must contain an @ symbol', (done) => {
+    const emailMatch = /^[a-zA-Z]+@[a-zA-Z]+.+[a-zA-Z]$/;
+    const user = {
+      email: 'emmatest.com',
+      password: 'emmapassword1',
+    };
+    chai.request(app)
+      .post('/api/v1/auth/signin')
+      .send(user)
+      .end((err, res) => {
+        if (!emailMatch.test(user.email)) {
+          res.should.have.status(422);
+        }
+        done();
+      });
+  });
 });
