@@ -113,4 +113,19 @@ describe('/api/v1/auth/signin', () => {
   });
 
   // TODO: Add more test cases for signin here
+  it('fails if email is not valid', (done) => {
+    const user = {
+      email: 'xyz@test.com',
+      password: 'emmapassword1',
+    };
+    chai.request(app)
+      .post('/api/v1/auth/signin')
+      .send(user)
+      .end((err, res) => {
+        res.should.have.status(401);
+        res.body.should.be.a('object');
+        res.body.should.have.property('error').eql('user does not exist');
+        done();
+      });
+  });
 });
