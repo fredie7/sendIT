@@ -8,8 +8,7 @@
     "lint": "./node_modules/.bin/eslint",
     "build": "babel app.js --out-dir build",
     "test": "nyc mocha --require @babel/register  --timeout 5000 --exit tests",
-    "coveralls": "cat ./coverage/lcov.info | node node_modules/.bin/coveralls"    
-
+    "coveralls": "cat ./coverage/lcov.info | node node_modules/.bin/coveralls"
   },
   "keywords": [],
   "author": "",
