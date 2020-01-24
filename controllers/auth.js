@@ -37,11 +37,31 @@ const authController = {
     if (!existingUser) {
       return res.status(401).json({ error: 'user does not exist' });
     }
-    const { email } = req.body.email;
-    const token = jwt.sign({ email }, jwtSecretKey, {
+    const { id } = existingUser;
+    const token = jwt.sign({ id }, jwtSecretKey, {
       expiresIn: jwtExpiryTime,
     });
     return res.status(200).json({ token });
+  },
+
+  verifyUser: (req, res, next) => {
+    const token = req.headers.authorization;
+    // const existingUser = data.find((user) => user.email === req.body.email && user.password === req.body.password);
+    // const { id } = existingUser;
+    // const token = jwt.sign({ id }, jwtSecretKey, {
+    //   expiresIn: jwtExpiryTime,
+    // });
+    if (!token) {
+      return res.status(403).json({ error: 'user unauthorized' });
+    }
+    jwt.verify(token, jwtSecretKey, (err, authData) => {
+      if (err) {
+        res.status(403).json({ error: 'invalid token' });
+      } else {
+        res.json({ authData });
+      }
+    });
+    next();
   },
 };
 export default authController;
