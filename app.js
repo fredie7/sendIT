@@ -1,8 +1,8 @@
 import express from 'express';
 import dotenv from 'dotenv';
-const bodyParser = require('body-parser')
-const morgan = require('morgan')
-const expressValidator = require('express-validator');
+import bodyParser from 'body-parser';
+import morgan from 'morgan';
+import expressValidator from 'express-validator';
 
 dotenv.config();
 

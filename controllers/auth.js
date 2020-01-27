@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 
 const jwtSecretKey = 'dvhdvhdv887dbnbd';
 
-const jwtExpiryTime = 300;
+const jwtExpiryTime = 36000;
 
 const newID = () => {
   let id;
@@ -59,24 +59,5 @@ const authController = {
     });
   },
 
-//   verifyToken: (req, res, next) => {
-//     const bearerHeader = req.headers.authorization;
-//     if (bearerHeader !== 'undefined') {
-//       const token = bearerHeader.split('.')[1];
-//       req.token = token;
-//       next();
-//     } else {
-//       return res.status(403).json({ err: 'invalid user' });
-//     }
-//   },
-
-//   verifyUser: (req, res) => {
-//     jwt.verify(req.token, jwtSecretKey, (err, authData) => {
-//       if (err) {
-//         return res.status(403).json({ error: 'terribly invalid' });
-//       }
-//       res.decoded = authData;
-//     });
-//   },
 };
 export default authController;
