@@ -5,9 +5,9 @@ import validator from '../validator';
 const router = express.Router();
 
 const { signinValidator, signupValidator } = validator;
-const { signup, signin, verifyUser } = authController;
+const { signup, signin } = authController;
 
 router.post('/signup', signupValidator, signup);
-router.post('/signin', signinValidator, verifyUser, signin);
+router.post('/signin', signinValidator, signin);
 
 module.exports = router;

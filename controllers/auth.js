@@ -44,24 +44,39 @@ const authController = {
     return res.status(200).json({ token });
   },
 
-  verifyUser: (req, res, next) => {
+  verifyToken: (req, res, next) => {
     const token = req.headers.authorization;
-    // const existingUser = data.find((user) => user.email === req.body.email && user.password === req.body.password);
-    // const { id } = existingUser;
-    // const token = jwt.sign({ id }, jwtSecretKey, {
-    //   expiresIn: jwtExpiryTime,
-    // });
+
     if (!token) {
       return res.status(403).json({ error: 'user unauthorized' });
     }
     jwt.verify(token, jwtSecretKey, (err, authData) => {
       if (err) {
-        res.status(403).json({ error: 'invalid token' });
-      } else {
-        res.json({ authData });
+        return res.status(403).json({ error: 'unauthorized' });
       }
+      req.decoded = authData;
+      next();
     });
-    next();
   },
+
+//   verifyToken: (req, res, next) => {
+//     const bearerHeader = req.headers.authorization;
+//     if (bearerHeader !== 'undefined') {
+//       const token = bearerHeader.split('.')[1];
+//       req.token = token;
+//       next();
+//     } else {
+//       return res.status(403).json({ err: 'invalid user' });
+//     }
+//   },
+
+//   verifyUser: (req, res) => {
+//     jwt.verify(req.token, jwtSecretKey, (err, authData) => {
+//       if (err) {
+//         return res.status(403).json({ error: 'terribly invalid' });
+//       }
+//       res.decoded = authData;
+//     });
+//   },
 };
 export default authController;
