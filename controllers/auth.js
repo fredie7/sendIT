@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 
 const jwtSecretKey = 'dvhdvhdv887dbnbd';
 
-const jwtExpiryTime = 36000;
+const jwtExpiryTime = 3600;
 
 const newID = () => {
   let id;
