@@ -13,8 +13,8 @@ app.use(bodyParser.json());
 app.use(morgan('dev'));
 app.use(expressValidator());
 
-const authRoute = require('./routers/auth');
-const parcelRoutes = require('./routers/parcel');
+import authRoute from './routers/auth';
+import parcelRoutes from './routers/parcel';
 
 app.use('/api/v1/auth', authRoute);
 app.use('/api/v1/parcels', parcelRoutes);
