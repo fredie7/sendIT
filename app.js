@@ -1,8 +1,10 @@
 import express from 'express';
 import dotenv from 'dotenv';
-const bodyParser = require('body-parser')
-const morgan = require('morgan')
-const expressValidator = require('express-validator');
+import bodyParser from 'body-parser';
+import morgan from 'morgan';
+import expressValidator from 'express-validator';
+import authRoute from './routers/auth';
+import parcelRoutes from './routers/parcel';
 
 dotenv.config();
 
@@ -13,9 +15,10 @@ app.use(bodyParser.json());
 app.use(morgan('dev'));
 app.use(expressValidator());
 
-const authRoute = require('./routers/auth');
 
 app.use('/api/v1/auth', authRoute);
+app.use('/api/v1/parcels', parcelRoutes);
+
 
 app.get('/', (req, res) => res.status(200).json({ mesage: 'app started......' }));
 
