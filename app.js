@@ -3,6 +3,8 @@ import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import expressValidator from 'express-validator';
+import authRoute from './routers/auth';
+import parcelRoutes from './routers/parcel';
 
 dotenv.config();
 
@@ -13,8 +15,6 @@ app.use(bodyParser.json());
 app.use(morgan('dev'));
 app.use(expressValidator());
 
-import authRoute from './routers/auth';
-import parcelRoutes from './routers/parcel';
 
 app.use('/api/v1/auth', authRoute);
 app.use('/api/v1/parcels', parcelRoutes);
