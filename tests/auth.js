@@ -1,6 +1,8 @@
 import chaiHttp from 'chai-http';
-import app from '../app';
 import chai from 'chai';
+import uuidV4 from 'uuid/v4';
+import app from '../app';
+
 
 chai.use(chaiHttp);
 chai.should();
@@ -144,5 +146,52 @@ describe('/api/v1/auth/signin', () => {
         }
         done();
       });
+  });
+});
+
+describe('/api/v1/parcels/parcels', () => {
+  const newUser = {
+    name: 'felix',
+    email: 'felix@test.com',
+    password: 'jayjay1',
+  };
+  const user = {
+    email: 'felix@test.com',
+    password: 'jayjay1',
+  };
+
+  before((done) => {
+    request.post('/api/v1/auth/signup')
+      .send(newUser)
+      .end((err, res) => {
+        done();
+      });
+    
+    request.post('api/v1/auth/signin')
+      .send(user)
+      .end((err,res) => {
+        done();
+      });
+  });
+
+  it('should provide a statusCode of 201', (done) => {
+    const order = {
+      id: uuidV4(),
+      createdBy: 'felix',
+      pickupLocation: 'ikeja',
+      deliveryLocation: 'maryland',
+      presentLocation: 'ogba',
+      receiverPhone: '08076323278',
+      receiverEmail: 'felix@gmail.com',
+      description: 'felix dummy desc desc',
+      weight: '10',
+    };
+    chai.request(app)
+      .post('/api/v1/parcels/parcels')
+      .send(order)
+      .end((err, res) => {
+        res.should.have.status(201);
+      });
+    done();
   });
 });
