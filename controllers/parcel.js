@@ -3,12 +3,13 @@ import parcelData from '../data/parcelData';
 
 const parcelController = {
   createParcel: ((req, res) => {
-    const parcelExists = parcelData.find((parcel) => parcel.id === req.body.id);
+    const parcelExists = parcelData.find((parcel) => parcel.createdBy === req.body.createdBy);
     if (parcelExists) {
       return res.status(401).json({ mesage: 'parcel already exists' });
     }
     const newParcel = {
-      createdBy: req.body.createdBy,
+      id: uuidV4(),
+      createdBy: req.decoded.id,
       pickupLocation: req.body.pickupLocation,
       deliveryLocation: req.body.deliveryLocation,
       presentLocation: req.body.presentLocation,
@@ -16,7 +17,6 @@ const parcelController = {
       receiverEmail: req.body.receiverEmail,
       description: req.body.description,
       weight: req.body.weight,
-      id: uuidV4(),
     };
     parcelData.push(newParcel);
     res.status(201).json(newParcel);

@@ -8,7 +8,7 @@ chai.use(chaiHttp);
 chai.should();
 
 const { expect } = chai;
-const request = chai.request(app);
+// const request = chai.request(app);
 
 describe('/api/v1/auth/signup', () => {
   it('should return a status code of 201', (done) => {
@@ -43,7 +43,8 @@ describe('/api/v1/auth/signin', () => {
   // The before block is used here to allow us signup a user, who we can then attempt to signin
   // This block will be executed before the test cases below for this "describe" block (signin)
   before((done) => {
-    request.post('/api/v1/auth/signup')
+    chai.request(app)
+      .post('/api/v1/auth/signup')
       .send(newUser)
       .end((err, res) => {
         done();
@@ -149,35 +150,47 @@ describe('/api/v1/auth/signin', () => {
   });
 });
 
-describe('/api/v1/parcels/parcels', () => {
-  const newUser = {
-    name: 'felix',
-    email: 'felix@test.com',
-    password: 'jayjay1',
-  };
+describe.only('/api/v1/parcels', () => {
   const user = {
+    id: null,
+    token: null,
     email: 'felix@test.com',
     password: 'jayjay1',
+    name: 'felix',
+  };
+  const signupData = {
+    id: uuidV4(),
+    createdBy: uuidV4(),
+    name: user.name,
+    email: user.email,
+    password: user.password,
+  };
+  const signinData = {
+    name: user.name,
+    email: user.email,
+    password: user.password,
   };
 
   before((done) => {
-    request.post('/api/v1/auth/signup')
-      .send(newUser)
+    chai.request(app)
+      .post('/api/v1/auth/signup')
+      .send(signupData)
       .end((err, res) => {
-        done();
+        user.id = res.body.id;
       });
     
-    request.post('api/v1/auth/signin')
-      .send(user)
-      .end((err,res) => {
+    chai.request(app)
+      .post('/api/v1/auth/signin')
+      .send(signinData)
+      .end((err, res) => {
+        user.token = res.body.token;
         done();
       });
   });
 
   it('should provide a statusCode of 201', (done) => {
     const order = {
-      id: uuidV4(),
-      createdBy: 'felix',
+      createdBy: user.id,
       pickupLocation: 'ikeja',
       deliveryLocation: 'maryland',
       presentLocation: 'ogba',
@@ -187,10 +200,13 @@ describe('/api/v1/parcels/parcels', () => {
       weight: '10',
     };
     chai.request(app)
-      .post('/api/v1/parcels/parcels')
+      .post('/api/v1/parcels')
+      .set('authorization', user.token)
       .send(order)
       .end((err, res) => {
         res.should.have.status(201);
+        res.body.should.have.property('createdBy');
+        res.body.createdBy.should.eql(user.id);
       });
     done();
   });

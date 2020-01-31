@@ -1,4 +1,6 @@
+import uuidV4 from 'uuid/v4';
 import data from '../data/users';
+
 
 const jwt = require('jsonwebtoken');
 
@@ -26,7 +28,7 @@ const authController = {
       name: req.body.name,
       email: req.body.email,
       password: req.body.password,
-      id: newID(),
+      id: uuidV4(),
     };
     data.push(newUser);
     return res.status(201).json(newUser);
