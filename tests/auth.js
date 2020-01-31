@@ -205,9 +205,58 @@ describe.only('/api/v1/parcels', () => {
       .send(order)
       .end((err, res) => {
         res.should.have.status(201);
+        res.body.should.be.a('object')
         res.body.should.have.property('createdBy');
         res.body.createdBy.should.eql(user.id);
+        res.body.should.have.property('pickupLocation');
+        res.body.should.have.property('deliveryLocation');
+        res.body.should.have.property('presentLocation');
+        res.body.should.have.property('receiverPhone');
+        res.body.should.have.property('receiverEmail');
+        res.body.should.have.property('description');
+        res.body.should.have.property('weight');
       });
     done();
   });
+
+  it('should fail if any enteries aren\'t provided', (done) => {
+    const order = {
+      createdBy: user.id,
+      pickupLocation: '',
+      deliveryLocation: '',
+      presentLocation: '',
+      receiverPhone: '',
+      receiverEmail: '',
+      description: '',
+      weight: '',
+    };
+
+    chai.request(app)
+      .post('/api/v1/parcels')
+      .send(order)
+      .end((req, res) => {
+         res.body.should.be.a('object');
+         res.should.have.status(422);
+         res.body.should.have.property('error');
+      }) 
+      done();       
+  })
+
+  it('receiver\'s email must contain an @ symbol', (done) => {
+    const order = {
+      receiverEmail: 'receivermail.com'
+    }
+    const emailMatch = /^[a-zA-Z].@.[a-zA-Z]+.[a-zA-Z]$/;
+    chai.request(app)
+      .post('/api/v1/parcel')
+      .send(order)
+      .end((err, res) => {
+        if (!emailMatch.test(order.receiverEmail)) {
+            res.should.have.status(404)
+            res.body.should.be.a('object')       
+        }
+      })
+    done()
+  })
 });
+
