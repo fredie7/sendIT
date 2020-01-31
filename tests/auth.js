@@ -8,7 +8,6 @@ chai.use(chaiHttp);
 chai.should();
 
 const { expect } = chai;
-// const request = chai.request(app);
 
 describe('/api/v1/auth/signup', () => {
   it('should return a status code of 201', (done) => {

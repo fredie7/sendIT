@@ -1,10 +1,8 @@
-// import data from '../data/users';
-
 const jwt = require('jsonwebtoken');
 
-const jwtSecretKey = 'dvhdvhdv887dbnbd';
 
 const jwtExpiryTime = 3600;
+require('dotenv').config()
 
 
 const middlewares = {
@@ -14,7 +12,7 @@ const middlewares = {
     if (!token) {
       return res.status(403).json({ error: 'user unauthorized' });
     }
-    jwt.verify(token, jwtSecretKey, (err, authData) => {
+    jwt.verify(token, process.env.JWT_SECRET, (err, authData) => {
       if (err) {
         return res.status(403).json({ error: 'unauthorized' });
       }

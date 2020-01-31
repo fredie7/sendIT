@@ -3,8 +3,7 @@ import data from '../data/users';
 
 
 const jwt = require('jsonwebtoken');
-
-const jwtSecretKey = 'dvhdvhdv887dbnbd';
+require('dotenv').config()
 
 const jwtExpiryTime = 3600;
 
@@ -40,26 +39,10 @@ const authController = {
       return res.status(401).json({ error: 'user does not exist' });
     }
     const { id } = existingUser;
-    const token = jwt.sign({ id }, jwtSecretKey, {
+    const token = jwt.sign({ id }, process.env.JWT_SECRET, {
       expiresIn: jwtExpiryTime,
     });
     return res.status(200).json({ token });
   },
-
-  // verifyToken: (req, res, next) => {
-  //   const token = req.headers.authorization;
-
-  //   if (!token) {
-  //     return res.status(403).json({ error: 'user unauthorized' });
-  //   }
-  //   jwt.verify(token, jwtSecretKey, (err, authData) => {
-  //     if (err) {
-  //       return res.status(403).json({ error: 'unauthorized' });
-  //     }
-  //     req.decoded = authData;
-  //     next();
-  //   });
-  // },
-
 };
 export default authController;
