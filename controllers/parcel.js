@@ -3,10 +3,6 @@ import parcelData from '../data/parcelData';
 
 const parcelController = {
   createParcel: ((req, res) => {
-    const parcelExists = parcelData.find((parcel) => parcel.id === req.body.id);
-    if (parcelExists) {
-      return res.status(401).json({ mesage: 'parcel already exists' });
-    }
     const newParcel = {
       id: uuidV4(),
       createdBy: req.decoded.id,

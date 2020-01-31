@@ -1,9 +1,9 @@
-import data from './users';
+import users from './users';
 
 const parcelData = [
   {
     id: 1,
-    createdBy: data.id[0],
+    createdBy: users[0].id,
     pickupLocation: 'ikeja',
     deliveryLocation: 'maryland',
     presentLocation: 'ogba',
@@ -14,7 +14,7 @@ const parcelData = [
   },
   {
     id: 2,
-    createdBy: data.id[1],
+    createdBy: users[0].id,
     pickupLocation: 'abuja',
     deliveryLocation: 'fct',
     presentLocation: 'agege',
@@ -25,7 +25,7 @@ const parcelData = [
   },
   {
     id: 3,
-    createdBy: data.id[2],
+    createdBy: users[0].id,
     pickupLocation: 'delta',
     deliveryLocation: 'asaba',
     presentLocation: 'yaba',

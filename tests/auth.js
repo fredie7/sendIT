@@ -234,28 +234,27 @@ describe.only('/api/v1/parcels', () => {
       .post('/api/v1/parcels')
       .send(order)
       .end((req, res) => {
-         res.body.should.be.a('object');
-         res.should.have.status(422);
-         res.body.should.have.property('error');
-      }) 
-      done();       
-  })
+        res.body.should.be.a('object');
+        res.should.have.status(422);
+        res.body.should.have.property('error');
+      }); 
+    done();     
+  });
 
-  it('receiver\'s email must contain an @ symbol', (done) => {
+  it('checks that receiver\'s email contain an @ symbol', (done) => {
     const order = {
       receiverEmail: 'receivermail.com'
-    }
+    };
     const emailMatch = /^[a-zA-Z].@.[a-zA-Z]+.[a-zA-Z]$/;
     chai.request(app)
       .post('/api/v1/parcel')
       .send(order)
       .end((err, res) => {
         if (!emailMatch.test(order.receiverEmail)) {
-            res.should.have.status(404)
-            res.body.should.be.a('object')       
+          res.should.have.status(404);
+          res.body.should.be.a('object');
         }
-      })
-    done()
-  })
+      });
+    done();
+  });
 });
-
