@@ -1,12 +1,9 @@
 import chaiHttp from 'chai-http';
-import app from '../app';
 import chai from 'chai';
+import app from '../app';
 
 chai.use(chaiHttp);
 chai.should();
-
-const { expect } = chai;
-const request = chai.request(app);
 
 describe('/api/v1/auth/signup', () => {
   it('should return a status code of 201', (done) => {
@@ -32,7 +29,7 @@ describe('/api/v1/auth/signup', () => {
 
 // signin "describe" block
 describe('/api/v1/auth/signin', () => {
-  let newUser = {
+  const newUser = {
     name: 'emma',
     email: 'emma@test.com',
     password: 'emmapassword1',
@@ -41,9 +38,10 @@ describe('/api/v1/auth/signin', () => {
   // The before block is used here to allow us signup a user, who we can then attempt to signin
   // This block will be executed before the test cases below for this "describe" block (signin)
   before((done) => {
-    request.post('/api/v1/auth/signup')
+    chai.request(app)
+      .post('/api/v1/auth/signup')
       .send(newUser)
-      .end((err, res) => {
+      .end(() => {
         done();
       });
   });
@@ -146,3 +144,4 @@ describe('/api/v1/auth/signin', () => {
       });
   });
 });
+

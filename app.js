@@ -17,8 +17,7 @@ app.use(expressValidator());
 
 
 app.use('/api/v1/auth', authRoute);
-app.use('/api/v1/parcels', parcelRoutes);
-
+app.use('/api/v1', parcelRoutes);
 
 app.get('/', (req, res) => res.status(200).json({ mesage: 'app started......' }));
 
