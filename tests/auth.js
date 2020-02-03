@@ -1,13 +1,9 @@
 import chaiHttp from 'chai-http';
 import chai from 'chai';
-import uuidV4 from 'uuid/v4';
 import app from '../app';
-
 
 chai.use(chaiHttp);
 chai.should();
-
-const { expect } = chai;
 
 describe('/api/v1/auth/signup', () => {
   it('should return a status code of 201', (done) => {
@@ -33,7 +29,7 @@ describe('/api/v1/auth/signup', () => {
 
 // signin "describe" block
 describe('/api/v1/auth/signin', () => {
-  let newUser = {
+  const newUser = {
     name: 'emma',
     email: 'emma@test.com',
     password: 'emmapassword1',
@@ -45,7 +41,7 @@ describe('/api/v1/auth/signin', () => {
     chai.request(app)
       .post('/api/v1/auth/signup')
       .send(newUser)
-      .end((err, res) => {
+      .end(() => {
         done();
       });
   });
@@ -149,7 +145,7 @@ describe('/api/v1/auth/signin', () => {
   });
 });
 
-describe.only('/api/v1/parcels', () => {
+describe('/api/v1/parcels', () => {
   const user = {
     id: null,
     token: null,
@@ -158,8 +154,8 @@ describe.only('/api/v1/parcels', () => {
     name: 'felix',
   };
   const signupData = {
-    id: uuidV4(),
-    createdBy: uuidV4(),
+    id: user.id,
+    createdBy: user.id,
     name: user.name,
     email: user.email,
     password: user.password,
@@ -169,7 +165,6 @@ describe.only('/api/v1/parcels', () => {
     email: user.email,
     password: user.password,
   };
-
   before((done) => {
     chai.request(app)
       .post('/api/v1/auth/signup')
@@ -177,7 +172,6 @@ describe.only('/api/v1/parcels', () => {
       .end((err, res) => {
         user.id = res.body.id;
       });
-    
     chai.request(app)
       .post('/api/v1/auth/signin')
       .send(signinData)
@@ -189,7 +183,6 @@ describe.only('/api/v1/parcels', () => {
 
   it('should provide a statusCode of 201', (done) => {
     const order = {
-      createdBy: user.id,
       pickupLocation: 'ikeja',
       deliveryLocation: 'maryland',
       presentLocation: 'ogba',
@@ -204,7 +197,7 @@ describe.only('/api/v1/parcels', () => {
       .send(order)
       .end((err, res) => {
         res.should.have.status(201);
-        res.body.should.be.a('object')
+        res.body.should.be.a('object');
         res.body.should.have.property('createdBy');
         res.body.createdBy.should.eql(user.id);
         res.body.should.have.property('pickupLocation');
@@ -214,8 +207,8 @@ describe.only('/api/v1/parcels', () => {
         res.body.should.have.property('receiverEmail');
         res.body.should.have.property('description');
         res.body.should.have.property('weight');
+        done();
       });
-    done();
   });
 
   it('should fail if any enteries aren\'t provided', (done) => {
@@ -237,24 +230,21 @@ describe.only('/api/v1/parcels', () => {
         res.body.should.be.a('object');
         res.should.have.status(422);
         res.body.should.have.property('error');
-      }); 
-    done();     
+        done();
+      });
   });
 
   it('checks that receiver\'s email contain an @ symbol', (done) => {
     const order = {
-      receiverEmail: 'receivermail.com'
+      receiverEmail: 'receivermail.com',
     };
-    const emailMatch = /^[a-zA-Z].@.[a-zA-Z]+.[a-zA-Z]$/;
     chai.request(app)
       .post('/api/v1/parcel')
       .send(order)
       .end((err, res) => {
-        if (!emailMatch.test(order.receiverEmail)) {
-          res.should.have.status(404);
-          res.body.should.be.a('object');
-        }
+        res.should.have.status(404);
+        res.body.should.be.a('object');
+        done();
       });
-    done();
   });
 });

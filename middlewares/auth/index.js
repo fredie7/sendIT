@@ -1,9 +1,6 @@
-const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
 
-
-const jwtExpiryTime = 3600;
-require('dotenv').config()
-
+require('dotenv').config();
 
 const middlewares = {
   verifyToken: (req, res, next) => {
