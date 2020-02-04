@@ -8,7 +8,8 @@
     "lint": "./node_modules/.bin/eslint",
     "build": "babel app.js --out-dir build",
     "test": "nyc mocha --require @babel/register  --timeout 5000 --exit tests",
-    "coveralls": "cat ./coverage/lcov.info | node node_modules/.bin/coveralls"
+    "coveralls": "cat ./coverage/lcov.info | node node_modules/.bin/coveralls",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix sendit_backend"
   },
   "keywords": [],
   "author": "",
