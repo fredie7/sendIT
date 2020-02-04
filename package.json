@@ -8,7 +8,7 @@
     "lint": "./node_modules/.bin/eslint",
     "start": "node build/app.js",
     "build": "babel src --out-dir build",
-    "test": "nyc mocha --require @babel/register  --timeout 5000 --exit tests",
+    "test": "nyc mocha --require @babel/register  --timeout 5000 --exit src/tests",
     "coveralls": "cat ./coverage/lcov.info | node node_modules/.bin/coveralls",
     "heroku-postbuild": "npm run build"
   },
