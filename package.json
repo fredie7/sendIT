@@ -4,11 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --exec babel-node app.js",
+    "dev": "nodemon --exec babel-node src/app.js",
     "lint": "./node_modules/.bin/eslint",
-    "build": "babel app.js --out-dir build",
+    "start": "node build/app.js",
+    "build": "babel src --out-dir build",
     "test": "nyc mocha --require @babel/register  --timeout 5000 --exit tests",
-    "coveralls": "cat ./coverage/lcov.info | node node_modules/.bin/coveralls"
+    "coveralls": "cat ./coverage/lcov.info | node node_modules/.bin/coveralls",
+    "heroku-postbuild": "npm run build"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +18,8 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-validator": "^5.3.1",
@@ -33,8 +37,6 @@
     "@babel/preset-env": "^7.7.7",
     "@babel/register": "^7.8.3",
     "@types/chai-http": "^4.2.0",
-    "chai": "^4.2.0",
-    "chai-http": "^4.3.0",
     "cookie-parser": "^1.4.4",
     "coveralls": "^3.0.9",
     "eslint": "^6.1.0",
