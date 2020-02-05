@@ -18,9 +18,8 @@ const parcelController = {
     res.status(201).json(newParcel);
   }),
 
-  editParcel: ((req, res) => {
+  editParcel: ((id, req, res) => {
     const foundParcel = parcelData.find((parcel) => parcel.id === parcelData.id);
-    console.log(foundParcel)
     if (!foundParcel) {
       return res.status(404).json({ error: 'parcel not found' });
     }
