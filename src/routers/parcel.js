@@ -11,7 +11,7 @@ const { createParcel, editParcel } = parcelController;
 const router = express.Router();
 
 router.post('/parcels', createParcelValidation, verifyToken, createParcel);
-router.put('/parcels/:parcelsID', editParcel);
+router.put('/parcels/:parcelId', editParcel);
 
 
 module.exports = router;
