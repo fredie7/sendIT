@@ -19,7 +19,7 @@ const parcelController = {
   }),
 
   editParcel: ((req, res) => {
-    console.log(parcels)
+    // console.log(parcels)
     const foundParcel = parcels.find((parcel) => parcel.id === req.params.parcelId);
     if (!foundParcel) {
       return res.status(404).json({ error: 'parcel not found' });
@@ -35,7 +35,6 @@ const parcelController = {
     };
     const parcelIndex = parcels.indexOf(foundParcel);
     const newCollection = parcels.splice(parcelIndex, 1, updatedParcel);
-    console.log(parcels)
     return res.status(200).json(newCollection);
   }),
 };

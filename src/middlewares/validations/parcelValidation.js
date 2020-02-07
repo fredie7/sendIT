@@ -6,7 +6,7 @@ const parcelValidation = {
     req.check('receiverPhone', 'enter receiver\'s phone number').notEmpty();
     req.check('receiverEmail', 'enter receiver\'s email').notEmpty();
     req.check('description', 'a brief description of parcel is required').notEmpty();
-    req.check('description').isLength({ min: 20, max: 200 }).withMessage('content should be between 20 - 200 characters');
+    req.check('description').isLength({ min: 20, max: 200 }).withMessage('content description should be between 20 - 200 characters');
     req.check('weight', 'fill in appropriate weight measure').notEmpty();
 
     const errors = req.validationErrors();
