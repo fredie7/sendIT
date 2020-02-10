@@ -25,6 +25,7 @@ const parcelController = {
       return res.status(404).json({ error: 'parcel not found' });
     }
     const updatedParcel = {
+      ...foundParcel,
       pickupLocation: req.body.pickupLocation || foundParcel.pickupLocation,
       deliveryLocation: req.body.deliveryLocation || foundParcel.deliveryLocation,
       presentLocation: req.body.presentLocation || foundParcel.presentLocation,
@@ -34,8 +35,8 @@ const parcelController = {
       weight: req.body.weight || foundParcel.weight,
     };
     const parcelIndex = parcels.indexOf(foundParcel);
-    const newCollection = parcels.splice(parcelIndex, 1, updatedParcel);
-    return res.status(200).json(newCollection);
+    parcels.splice(parcelIndex, 1, updatedParcel);
+    return res.status(200).json(updatedParcel);
   }),
 };
 

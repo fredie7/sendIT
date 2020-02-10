@@ -136,7 +136,6 @@ describe.only('/api/v1/parcels/:parcelId', () => {
     password: user.password,
   };
   const signinData = {
-    name: user.name,
     email: user.email,
     password: user.password,
   };
@@ -146,55 +145,54 @@ describe.only('/api/v1/parcels/:parcelId', () => {
       .send(signupData)
       .end((err, res) => {
         user.id = res.body.id;
-      });
-    chai.request(app)
-      .post('/api/v1/auth/signin')
-      .send(signinData)
-      .end((err, res) => {
-        user.token = res.body.token;
-      });
-    chai.request(app)
-      .post('/api/v1/parcels')
-      .set('authorization', user.token)
-      .send(parcelData)
-      .end((err, res) => {
-        parcelData.id = res.body.id;
-        console.log(res.body)
-        done();
+        chai.request(app)
+          .post('/api/v1/auth/signin')
+          .send(signinData)
+          .end((err, res) => {
+            user.token = res.body.token;
+            chai.request(app)
+              .post('/api/v1/parcels')
+              .set('authorization', user.token)
+              .send(parcelData)
+              .end((err, res) => {
+                parcelData.id = res.body.id;
+                done();
+              });
+          });
       });
   });
   it('shoud return a stautus code of 200', (done) => {
-    // const parcelUpdateData = {
-    //   pickupLocation: 'ketu',
-    //   deliveryLocation: 'mile2',
-    //   presentLocation: 'lekki',
-    // };
-    // chai.request(app)
-    //   .put(`/api/v1/parcels/:${parcelData.id}`)
-    //   .set('authorization', user.token)
-    //   .send(parcelUpdateData)
-    //   .end((err, res) => {
-    //     res.should.have.status(200);
-    //     res.body.should.be.a('object');
-    //     res.body.should.have.property('createdBy');
-    //     res.body.createdBy.should.eql(user.id);
-    //     res.body.should.have.property('pickupLocation');
-    //     res.body.should.have.property('deliveryLocation');
-    //     res.body.should.have.property('presentLocation');
-    //     res.body.should.have.property('receiverPhone');
-    //     res.body.should.have.property('receiverEmail');
-    //     res.body.should.have.property('description');
-    //     res.body.should.have.property('weight');
-    //     // to ensure the updates occured for the specific properties
-    //     res.body.pickupLocation.should.eql(parcelUpdateData.pickupLocation);
-    //     res.body.deliveryLocation.should.eql(parcelUpdateData.deliveryLocation);
-    //     res.body.presentLocation.should.eql(parcelUpdateData.presentLocation);
-    //     // to ensure no other properties where tampered.
-    //     res.body.weight.should.eql(parcelData.weight);
-    //     res.body.description.should.eql(parcelData.description);
-    //     res.body.deliveryLocation.should.eql(parcelUpdateData.receiverEmail);
-    //     res.body.presentLocation.should.eql(parcelUpdateData.receiverPhone);
-    //     done();
-    //   });
+    const parcelUpdateData = {
+      pickupLocation: 'ketu',
+      deliveryLocation: 'mile2',
+      presentLocation: 'ogba',
+    };
+    chai.request(app)
+      .put(`/api/v1/parcels/${parcelData.id}`)
+      .set('authorization', user.token)
+      .send(parcelUpdateData)
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.should.be.a('object');
+        res.body.should.have.property('createdBy');
+        res.body.createdBy.should.eql(user.id);
+        res.body.should.have.property('pickupLocation');
+        res.body.should.have.property('deliveryLocation');
+        res.body.should.have.property('presentLocation');
+        res.body.should.have.property('receiverPhone');
+        res.body.should.have.property('receiverEmail');
+        res.body.should.have.property('description');
+        res.body.should.have.property('weight');
+        // to ensure the updates occured for the specific properties
+        res.body.pickupLocation.should.eql(parcelUpdateData.pickupLocation);
+        res.body.deliveryLocation.should.eql(parcelUpdateData.deliveryLocation);
+        res.body.presentLocation.should.eql(parcelUpdateData.presentLocation);
+        // to ensure no other properties where tampered.
+        res.body.weight.should.eql(parcelData.weight);
+        res.body.description.should.eql(parcelData.description);
+        res.body.receiverEmail.should.eql(parcelData.receiverEmail);
+        res.body.receiverPhone.should.eql(parcelData.receiverPhone);
+        done();
+      });
   });
 });
