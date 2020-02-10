@@ -139,27 +139,25 @@ describe.only('/api/v1/parcels/:parcelId', () => {
     email: user.email,
     password: user.password,
   };
-  before((done) => {
-    chai.request(app)
-      .post('/api/v1/auth/signup')
-      .send(signupData)
-      .end((err, res) => {
-        user.id = res.body.id;
-        chai.request(app)
-          .post('/api/v1/auth/signin')
-          .send(signinData)
-          .end((err, res) => {
-            user.token = res.body.token;
-            chai.request(app)
-              .post('/api/v1/parcels')
-              .set('authorization', user.token)
-              .send(parcelData)
-              .end((err, res) => {
-                parcelData.id = res.body.id;
-                done();
-              });
-          });
-      });
+  before(async () => {
+    let res = await 
+      chai.request(app)
+        .post('/api/v1/auth/signup')
+        .send(signupData);
+    user.id = res.body.id;
+
+    res = await 
+      chai.request(app)
+        .post('/api/v1/auth/signin')
+        .send(signinData)
+    user.token = res.body.token;
+
+    res = await 
+      chai.request(app)
+        .post('/api/v1/parcels')
+        .set('authorization', user.token)
+        .send(parcelData)
+    parcelData.id = res.body.id;
   });
   it('shoud return a status code of 200', (done) => {
     const parcelUpdateData = {
@@ -206,7 +204,6 @@ describe.only('/api/v1/parcels/:parcelId', () => {
       .end((err, res) => {
         res.should.have.status(422);
         res.body.should.be.a('object');
-        res.body.should.have.property('pickupLocation');
         res.body.should.have.property('error');
         done();
       });
