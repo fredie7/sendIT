@@ -161,7 +161,7 @@ describe.only('/api/v1/parcels/:parcelId', () => {
           });
       });
   });
-  it('shoud return a stautus code of 200', (done) => {
+  it('shoud return a status code of 200', (done) => {
     const parcelUpdateData = {
       pickupLocation: 'ketu',
       deliveryLocation: 'mile2',
@@ -192,6 +192,22 @@ describe.only('/api/v1/parcels/:parcelId', () => {
         res.body.description.should.eql(parcelData.description);
         res.body.receiverEmail.should.eql(parcelData.receiverEmail);
         res.body.receiverPhone.should.eql(parcelData.receiverPhone);
+        done();
+      });
+  });
+  it('must contain at least 3 characters', (done) => {
+    const parcelLocationData = {
+      pickupLocation: 'k',
+    };
+    chai.request(app)
+      .put(`/api/v1/parcels/${parcelData.id}`)
+      .set('authorization', user.token)
+      .send(parcelLocationData)
+      .end((err, res) => {
+        res.should.have.status(422);
+        res.body.should.be.a('object');
+        res.body.should.have.property('pickupLocation');
+        res.body.should.have.property('error');
         done();
       });
   });

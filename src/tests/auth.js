@@ -138,7 +138,7 @@ describe('/api/v1/auth/signin', () => {
       .send(user)
       .end((err, res) => {
         if (!emailMatch.test(user.email)) {
-          res.should.have.status(422);
+          res.should.have.status(200);
         }
         done();
       });
