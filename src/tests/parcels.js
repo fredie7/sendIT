@@ -3,11 +3,10 @@ import chaiHttp from 'chai-http';
 import chai from 'chai';
 import app from '../app';
 
-
 chai.use(chaiHttp);
 chai.should();
 
-describe('/api/v1/parcels', () => {
+describe('POST /api/v1/parcels', () => {
   const user = {
     id: null,
     token: null,
@@ -16,8 +15,6 @@ describe('/api/v1/parcels', () => {
     name: 'felix',
   };
   const signupData = {
-    id: user.id,
-    createdBy: user.id,
     name: user.name,
     email: user.email,
     password: user.password,
@@ -27,23 +24,22 @@ describe('/api/v1/parcels', () => {
     email: user.email,
     password: user.password,
   };
-  before((done) => {
-    chai.request(app)
-      .post('/api/v1/auth/signup')
-      .send(signupData)
-      .end((err, res) => {
-        user.id = res.body.id;
-      });
-    chai.request(app)
-      .post('/api/v1/auth/signin')
-      .send(signinData)
-      .end((err, res) => {
-        user.token = res.body.token;
-        done();
-      });
+
+  before(async () => {
+    let res = await 
+      chai.request(app)
+        .post('/api/v1/auth/signup')
+        .send(signupData)
+    user.id = res.body.id;
+
+    res = await 
+      chai.request(app)
+        .post('/api/v1/auth/signin')
+        .send(signinData)
+    user.token = res.body.token;
   });
 
-it('should provide a statusCode of 201', (done) => {
+  it('should provide a statusCode of 201', (done) => {
     const order = {
       pickupLocation: 'ikeja',
       deliveryLocation: 'maryland',
@@ -73,9 +69,8 @@ it('should provide a statusCode of 201', (done) => {
       });
   });
 
-it('should fail if any enteries aren\'t provided', (done) => {
+  it('should fail if any enteries aren\'t provided', (done) => {
     const order = {
-      createdBy: user.id,
       pickupLocation: '',
       deliveryLocation: '',
       presentLocation: '',
@@ -87,6 +82,7 @@ it('should fail if any enteries aren\'t provided', (done) => {
 
     chai.request(app)
       .post('/api/v1/parcels')
+      .set('authorization', user.token)
       .send(order)
       .end((req, res) => {
         res.body.should.be.a('object');
@@ -96,26 +92,34 @@ it('should fail if any enteries aren\'t provided', (done) => {
       });
   });
 
-it('checks that receiver\'s email contain an @ symbol', (done) => {
+  it('checks that receiver\'s email contain an @ symbol', (done) => {
     const order = {
+      pickupLocation: 'ikeja',
+      deliveryLocation: 'maryland',
+      presentLocation: 'ogba',
+      receiverPhone: '08076323278',
       receiverEmail: 'receivermail.com',
+      description: 'felix dummy desc desc',
+      weight: '10',
     };
     chai.request(app)
-      .post('/api/v1/parcel')
+      .post('/api/v1/parcels')
+      .set('authorization', user.token)
       .send(order)
       .end((err, res) => {
-        res.should.have.status(404);
+        res.should.have.status(422);
         res.body.should.be.a('object');
+        res.body.should.have.property('error').eql('provide a valid email');
         done();
       });
   });
 });
 
-describe.only('/api/v1/parcels/:parcelId', () => {
+describe('PUT /api/v1/parcels/:parcelId', () => {
   const user = {
     id: null,
     token: null,
-    email: 'felix@test.com',
+    email: 'felix2@test.com',
     password: 'jayjay1',
     name: 'felix',
   };
@@ -129,8 +133,6 @@ describe.only('/api/v1/parcels/:parcelId', () => {
     weight: '12',
   };
   const signupData = {
-    id: user.id,
-    createdBy: user.id,
     name: user.name,
     email: user.email,
     password: user.password,
@@ -139,6 +141,7 @@ describe.only('/api/v1/parcels/:parcelId', () => {
     email: user.email,
     password: user.password,
   };
+
   before(async () => {
     let res = await 
       chai.request(app)
@@ -159,7 +162,8 @@ describe.only('/api/v1/parcels/:parcelId', () => {
         .send(parcelData)
     parcelData.id = res.body.id;
   });
-  it('shoud return a status code of 200', (done) => {
+
+  it('shoud update a parcel when valid input is provided', (done) => {
     const parcelUpdateData = {
       pickupLocation: 'ketu',
       deliveryLocation: 'mile2',
@@ -193,7 +197,8 @@ describe.only('/api/v1/parcels/:parcelId', () => {
         done();
       });
   });
-  it('must contain at least 3 characters', (done) => {
+
+  it('fails when pickupLocation violates minimum number of characters', (done) => {
     const parcelLocationData = {
       pickupLocation: 'k',
     };
@@ -205,6 +210,7 @@ describe.only('/api/v1/parcels/:parcelId', () => {
         res.should.have.status(422);
         res.body.should.be.a('object');
         res.body.should.have.property('error');
+        res.body.error.should.eql('content description should be between 3 - 100 characters');
         done();
       });
   });

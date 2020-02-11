@@ -4,7 +4,7 @@ const parcelValidation = {
     req.check('presentLocation', 'enter your present location').notEmpty();
     req.check('presentLocation').isLength({ min: 2, max: 20 }).withMessage('content should be betweek 2 - 20 characters');
     req.check('receiverPhone', 'enter receiver\'s phone number').notEmpty();
-    req.check('receiverEmail', 'enter receiver\'s email').notEmpty();
+    req.check('receiverEmail', 'enter receiver\'s email').isEmail().withMessage('provide a valid email').notEmpty();
     req.check('description', 'a brief description of parcel is required').notEmpty();
     req.check('description').isLength({ min: 20, max: 200 }).withMessage('content description should be between 20 - 200 characters');
     req.check('weight', 'fill in appropriate weight measure').notEmpty();
@@ -22,7 +22,7 @@ const parcelValidation = {
     req.check('presentLocation', 'enter your present location').notEmpty().optional();
     req.check('presentLocation').isLength({ min: 2, max: 20 }).withMessage('content should be between 3 - 20 characters').optional();
     req.check('receiverPhone', 'enter receiver\'s phone number').notEmpty().optional();
-    req.check('receiverEmail', 'enter receiver\'s email').notEmpty().optional();
+    req.check('receiverEmail', 'enter receiver\'s email').notEmpty().isEmail().optional();
     req.check('description', 'a brief description of parcel is required').notEmpty().optional();
     req.check('description').isLength({ min: 20, max: 200 }).withMessage('content description should be between 20 - 200 characters').optional();
     req.check('weight', 'fill in appropriate weight measure').notEmpty().optional();
