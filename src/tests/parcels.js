@@ -1,4 +1,3 @@
-import uuidV4 from 'uuid/v4';
 import chaiHttp from 'chai-http';
 import chai from 'chai';
 import app from '../app';
@@ -26,16 +25,14 @@ describe('POST /api/v1/parcels', () => {
   };
 
   before(async () => {
-    let res = await 
-      chai.request(app)
-        .post('/api/v1/auth/signup')
-        .send(signupData)
+    let res = await chai.request(app)
+      .post('/api/v1/auth/signup')
+      .send(signupData)
     user.id = res.body.id;
 
-    res = await 
-      chai.request(app)
-        .post('/api/v1/auth/signin')
-        .send(signinData)
+    res = await chai.request(app)
+      .post('/api/v1/auth/signin')
+      .send(signinData)
     user.token = res.body.token;
   });
 
@@ -88,6 +85,14 @@ describe('POST /api/v1/parcels', () => {
         res.body.should.be.a('object');
         res.should.have.status(422);
         res.body.should.have.property('error');
+        // test for error message
+        res.body.should.have.property('pickupLocation').eql('enter your pickup location');
+        res.body.should.have.property('deliveryLocation').eql('enter your delivery location');
+        res.body.should.have.property('presentLocation').eql('enter your present location');
+        res.body.should.have.property('receiverPhone').eql('enter receiver\'s phone number');
+        res.body.should.have.property('receiverEmail').eql('enter receiver\'s email');
+        res.body.should.have.property('description').eql('a brief description of parcel is required');
+        res.body.should.have.property('weight').eql('fill in appropriate weight measure');
         done();
       });
   });
@@ -143,23 +148,20 @@ describe('PUT /api/v1/parcels/:parcelId', () => {
   };
 
   before(async () => {
-    let res = await 
-      chai.request(app)
-        .post('/api/v1/auth/signup')
-        .send(signupData);
+    let res = await chai.request(app)
+      .post('/api/v1/auth/signup')
+      .send(signupData);
     user.id = res.body.id;
 
-    res = await 
-      chai.request(app)
-        .post('/api/v1/auth/signin')
-        .send(signinData)
+    res = await chai.request(app)
+      .post('/api/v1/auth/signin')
+      .send(signinData);
     user.token = res.body.token;
 
-    res = await 
-      chai.request(app)
-        .post('/api/v1/parcels')
-        .set('authorization', user.token)
-        .send(parcelData)
+    res = await chai.request(app)
+      .post('/api/v1/parcels')
+      .set('authorization', user.token)
+      .send(parcelData);
     parcelData.id = res.body.id;
   });
 
