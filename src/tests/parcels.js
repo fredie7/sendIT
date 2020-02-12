@@ -235,4 +235,46 @@ describe('PUT /api/v1/parcels/:parcelId', () => {
         done();
       });
   });
+
+  it.only('fails when no entries are provided', (done) => {
+    const parcelOrder = {
+      pickupLocation: 'ikeja',
+      deliveryLocation: 'maryland',
+      presentLocation: 'ogba',
+      receiverPhone: '08076543245',
+      receiverEmail: 'john@gmail.com',
+      description: 'john dummy desc desc',
+      weight: '12',
+    };
+
+    const errorMessages = {
+      pickupLocation: 'enter your pickup location',
+      deliveryLocation: 'enter your delivery location',
+      presentLocation: 'enter your present location',
+      receiverPhone: 'enter receiver\'s phone number',
+      receiverEmail: 'enter receiver\'s email',
+      description: 'a brief description of parcel is required',
+      weight: 'fill in appropriate weight measure',
+    };
+
+    const parcelOrderFields = Object.keys(parcelOrder);
+    parcelOrderFields.forEach((field, index) => {
+      chai.request(app)
+        .put(`/api/v1/parcels/${parcelData.id}`)
+        .set('authorization', user.token)
+        .send({
+          ...parcelOrder,
+          [field]: '',
+        })
+        .end((err, res) => {
+          res.should.have.status(422);
+          res.body.should.have.property('error').eql(errorMessages[field]);
+          console.log(res.body)
+
+          if (index === parcelOrderFields.length - 1) {
+            done();
+          }
+        });
+    });
+  });
 });
