@@ -67,34 +67,53 @@ describe('POST /api/v1/parcels', () => {
   });
 
   it('should fail if any enteries aren\'t provided', (done) => {
+    /**
+     * Since the API returns the error response for one field at any given time, 
+     * we have to test for each of the field's error messages in separate API requests
+     */
+
+    // The order request payload here provides all other fields but not 'pickupLocation'
+    // So, we should expect the error response message for 'pickupLocation'
     const order = {
-      pickupLocation: '',
-      deliveryLocation: '',
-      presentLocation: '',
-      receiverPhone: '',
-      receiverEmail: '',
-      description: '',
-      weight: '',
+      pickupLocation: 'ikeja',
+      deliveryLocation: 'maryland',
+      presentLocation: 'ogba',
+      receiverPhone: '08076323278',
+      receiverEmail: 'felix@gmail.com',
+      description: 'felix dummy desc desc',
+      weight: '10',
     };
 
-    chai.request(app)
-      .post('/api/v1/parcels')
-      .set('authorization', user.token)
-      .send(order)
-      .end((req, res) => {
-        res.body.should.be.a('object');
-        res.should.have.status(422);
-        res.body.should.have.property('error');
-        // test for error message
-        res.body.should.have.property('pickupLocation').eql('enter your pickup location');
-        res.body.should.have.property('deliveryLocation').eql('enter your delivery location');
-        res.body.should.have.property('presentLocation').eql('enter your present location');
-        res.body.should.have.property('receiverPhone').eql('enter receiver\'s phone number');
-        res.body.should.have.property('receiverEmail').eql('enter receiver\'s email');
-        res.body.should.have.property('description').eql('a brief description of parcel is required');
-        res.body.should.have.property('weight').eql('fill in appropriate weight measure');
-        done();
-      });
+    // We use a dictionary datastructure (just an object) to map to the error message 
+    // returned when each field is empty
+    const errorMessages = {
+      pickupLocation: 'enter your pickup location',
+      deliveryLocation: 'enter your delivery location',
+      presentLocation: 'enter your present location',
+      receiverPhone: 'enter receiver\'s phone number',
+      receiverEmail: 'provide a valid email',
+      description: 'a brief description of parcel is required',
+      weight: 'fill in appropriate weight measure',
+    }
+
+    const requestFields = Object.keys(order);
+    requestFields.forEach((field, index) => {
+      chai.request(app)
+        .post('/api/v1/parcels')
+        .set('authorization', user.token)
+        .send({
+          ...order,
+          [field]: ''
+        }).end((err, res) => {
+          res.should.have.status(422);
+          res.body.should.have.property('error').eql(errorMessages[field]);
+          
+          // call done after the last test
+          if (index === requestFields.length - 1) {
+            done();
+          }
+        });
+    });
   });
 
   it('checks that receiver\'s email contain an @ symbol', (done) => {
