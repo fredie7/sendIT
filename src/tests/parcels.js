@@ -259,8 +259,6 @@ describe('PUT /api/v1/parcels/:parcelId', () => {
         .end((err, res) => {
           res.should.have.status(422);
           res.body.should.have.property('error').eql(errorMessages[field]);
-          console.log(res.body)
-
           if (index === parcelOrderFields.length - 1) {
             done();
           }
