@@ -67,13 +67,6 @@ describe('POST /api/v1/parcels', () => {
   });
 
   it('should fail if any enteries aren\'t provided', (done) => {
-    /**
-     * Since the API returns the error response for one field at any given time, 
-     * we have to test for each of the field's error messages in separate API requests
-     */
-
-    // The order request payload here provides all other fields but not 'pickupLocation'
-    // So, we should expect the error response message for 'pickupLocation'
     const order = {
       pickupLocation: 'ikeja',
       deliveryLocation: 'maryland',
@@ -84,8 +77,6 @@ describe('POST /api/v1/parcels', () => {
       weight: '10',
     };
 
-    // We use a dictionary datastructure (just an object) to map to the error message 
-    // returned when each field is empty
     const errorMessages = {
       pickupLocation: 'enter your pickup location',
       deliveryLocation: 'enter your delivery location',
@@ -94,7 +85,7 @@ describe('POST /api/v1/parcels', () => {
       receiverEmail: 'provide a valid email',
       description: 'a brief description of parcel is required',
       weight: 'fill in appropriate weight measure',
-    }
+    };
 
     const requestFields = Object.keys(order);
     requestFields.forEach((field, index) => {
@@ -103,12 +94,11 @@ describe('POST /api/v1/parcels', () => {
         .set('authorization', user.token)
         .send({
           ...order,
-          [field]: ''
-        }).end((err, res) => {
+          [field]: '',
+        })
+        .end((err, res) => {
           res.should.have.status(422);
-          res.body.should.have.property('error').eql(errorMessages[field]);
-          
-          // call done after the last test
+          res.body.should.have.property('error').eql(errorMessages[field]);    
           if (index === requestFields.length - 1) {
             done();
           }
@@ -236,7 +226,7 @@ describe('PUT /api/v1/parcels/:parcelId', () => {
       });
   });
 
-  it.only('fails when no entries are provided', (done) => {
+  it('fails when no entries are provided', (done) => {
     const parcelOrder = {
       pickupLocation: 'ikeja',
       deliveryLocation: 'maryland',
