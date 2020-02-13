@@ -3,14 +3,15 @@ import parcelController from '../controllers/parcel';
 import middlewares from '../middlewares/auth';
 import parcelValidation from '../middlewares/validations/parcelValidation';
 
-const { createParcelValidation } = parcelValidation;
+const { createParcelValidation, editParcelValidation } = parcelValidation;
 const { verifyToken } = middlewares;
-const { createParcel } = parcelController;
+const { createParcel, editParcel } = parcelController;
 
 
 const router = express.Router();
 
-router.post('/parcels', createParcelValidation, verifyToken, createParcel);
+router.post('/parcels', verifyToken, createParcelValidation, createParcel);
+router.put('/parcels/:parcelId', verifyToken, editParcelValidation, editParcel);
 
 
 module.exports = router;

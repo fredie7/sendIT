@@ -1,8 +1,10 @@
+import uuidV4 from 'uuid/v4';
 import users from './users';
+
 
 const parcelData = [
   {
-    id: 1,
+    id: uuidV4(),
     createdBy: users[0].id,
     pickupLocation: 'ikeja',
     deliveryLocation: 'maryland',
@@ -13,7 +15,7 @@ const parcelData = [
     weight: '12',
   },
   {
-    id: 2,
+    id: uuidV4(),
     createdBy: users[0].id,
     pickupLocation: 'abuja',
     deliveryLocation: 'fct',
@@ -24,7 +26,7 @@ const parcelData = [
     weight: '16',
   },
   {
-    id: 3,
+    id: uuidV4(),
     createdBy: users[0].id,
     pickupLocation: 'delta',
     deliveryLocation: 'asaba',
