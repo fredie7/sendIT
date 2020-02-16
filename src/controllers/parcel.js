@@ -37,6 +37,15 @@ const parcelController = {
     parcels.splice(parcelIndex, 1, updatedParcel);
     return res.status(200).json(updatedParcel);
   }),
+
+  getOneParcel: ((req, res) => {
+    console.log(parcels)
+    const parcel = parcels.find((parcel) => parcel.id === req.params.parcelId);
+    if (!parcel) {
+      return res.status(404).json({ error: 'parcel not found' });
+    }
+    return res.status(200).json(parcel);
+  }),
 };
 
 export default parcelController;
