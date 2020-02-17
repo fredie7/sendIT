@@ -16,7 +16,7 @@ describe('POST /api/v1/parcels', () => {
   const signupData = {
     name: user.name,
     email: user.email,
-    password: user.password,
+    password: user.password
   };
   const signinData = {
     name: user.name,
