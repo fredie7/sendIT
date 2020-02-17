@@ -71,6 +71,9 @@ const parcelController = {
       return res.status(404).json({error: 'parcel not found'});
     }
     return res.json({ message: 'parcel order cancelled' });
+    // check that the order exists
+    // update the status of the order
+    // return the updated order
   }),
 };
 
