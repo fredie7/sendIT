@@ -3,7 +3,6 @@ import parcels from '../data/parcelData';
 
 const parcelController = {
   createParcel: ((req, res) => {
-    console.log(parcels)
     const newParcel = {
       id: uuidV4(),
       createdBy: req.decoded.id,
