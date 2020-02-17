@@ -2,6 +2,9 @@ import chaiHttp from 'chai-http';
 import chai from 'chai';
 import app from '../app';
 
+// import parcelData from '../data/parcelData';
+const allParcels = require('../data/parcelData')
+
 chai.use(chaiHttp);
 chai.should();
 
@@ -264,5 +267,31 @@ describe('PUT /api/v1/parcels/:parcelId', () => {
           }
         });
     });
+  });
+
+  it('should return all parcels', (done) => {
+    const parcels = parcelData;
+    chai.request(app)
+      .get('/api/v1/parcels')
+      .set('authorization', user.token)
+      .send(parcels)
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.should.be.a('array');
+        done();
+      });
+  });
+
+  it.only('should return one parcel', (done) => {
+    const singleParcel = allParcels[0];
+    console.log(singleParcel)
+    chai.request(app)
+      .get(`/api/v1/parcels/${singleParcel.id}`)
+      .set('authorization', user.token)
+      .send(singleParcel)
+      .end((err, res) => {
+        res.should.have.status(200);
+        done();
+      });
   });
 });

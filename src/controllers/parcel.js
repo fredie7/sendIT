@@ -39,7 +39,6 @@ const parcelController = {
   }),
 
   getOneParcel: ((req, res) => {
-    console.log(parcels)
     const parcel = parcels.find((parcel) => parcel.id === req.params.parcelId);
     if (!parcel) {
       return res.status(404).json({ error: 'parcel not found' });
