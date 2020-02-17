@@ -14,6 +14,7 @@ const parcelController = {
       description: req.body.description,
       weight: req.body.weight,
       createdAt: new Date(),
+      updatedAt: new Date(),
       status: 'pending',
     };
     parcels.push(newParcel);
@@ -36,7 +37,6 @@ const parcelController = {
       description: req.body.description || foundParcel.description,
       weight: req.body.weight || foundParcel.weight,
       updatedAt: new Date(),
-      status: 'pending',
     };
     const parcelIndex = parcels.indexOf(foundParcel);
     parcels.splice(parcelIndex, 1, updatedParcel);
