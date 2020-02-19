@@ -265,6 +265,83 @@ describe('PUT /api/v1/parcels/:parcelId', () => {
         });
     });
   });
+
+  describe.only('PUT /api/parcels/parcelId/changeParcelLocation', () => {
+    const user = {
+      id: null,
+      token: null,
+      name: 'felix',
+      email: 'felix@email.com',
+      password: 'felix123',
+    };
+    const parcelData = {
+      pickupLocation: 'ikeja',
+      deliveryLocation: 'maryland',
+      presentLocation: 'ogba',
+      receiverPhone: '08076543245',
+      receiverEmail: 'john@gmail.com',
+      description: 'john dummy desc desc',
+      weight: '12',
+    };
+    const signUpData = {
+      name: user.name,
+      email: user.email,
+      password: user.password,
+    }
+    const signInData = {
+      email: user.email,
+      password: user.password,
+    }
+    before(async () => {
+      let res = await chai.request(app)
+        .post('/api/v1/auth/signup')
+        .send(signUpData);
+      user.id = res.body.id;
+
+      res = await chai.request(app)
+        .post('/api/v1/auth/signin')
+        .send(signInData);
+      user.token = res.body.token;
+      
+      res = await chai.request(app)
+        .post('/api/v1/parcels')
+        .set('authorization', user.token)
+        .send(parcelData);
+      parcelData.id = res.body.id;
+      parcelData.createdBy = res.body.createdBy;
+    });
+
+    it('must change parcel location', (done) => {
+      const changeParcelLocation = {
+        presentLocation: 'adamawa', 
+      };
+      chai.request(app)
+        .put(`/api/v1/parcels/${parcelData.id}/changeLocation`)
+        .set('authorization', user.token)
+        .send(changeParcelLocation)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.should.have.property('createdBy');
+          res.body.createdBy.should.eql(user.id);
+          res.body.should.have.property('presentLocation');
+          res.body.should.have.property('pickupLocation');
+          res.body.should.have.property('deliveryLocation');
+          res.body.should.have.property('receiverPhone');
+          res.body.should.have.property('receiverEmail');
+          res.body.should.have.property('description');
+          res.body.should.have.property('weight');
+          res.body.presentLocation.should.eql(changeParcelLocation.presentLocation);
+          res.body.pickupLocation.should.eql(parcelData.pickupLocation);
+          res.body.deliveryLocation.should.eql(parcelData.deliveryLocation);
+          res.body.receiverPhone.should.eql(parcelData.receiverPhone);
+          res.body.receiverEmail.should.eql(parcelData.receiverEmail);
+          res.body.description.should.eql(parcelData.description);
+          res.body.weight.should.eql(parcelData.weight);
+          done();
+        });
+    });
+  });
 });
 
 
