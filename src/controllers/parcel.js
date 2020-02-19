@@ -71,28 +71,6 @@ const parcelController = {
       return res.status(404).json({error: 'parcel not found'});
     }
     return res.json({ message: 'parcel order cancelled' });
-    // check that the order exists
-    const orderExists = parcels.find((order) => order.id === req.params.parcelId);
-    const updatedParcel = {
-      ...orderExists,
-      pickupLocation: req.body.pickupLocation || orderExists.pickupLocation,
-      deliveryLocation: req.body.deliveryLocation || orderExists.deliveryLocation,
-      presentLocation: req.body.presentLocation || orderExists.presentLocation,
-      receiverPhone: req.body.receiverPhone || orderExists.receiverPhone,
-      receiverEmail: req.body.receiverEmail || orderExists.receiverEmail,
-      description: req.body.description || orderExists.description,
-      weight: req.body.weight || orderExists.weight,
-      updatedAt: new Date(),
-      status: 'pending',
-    };
-    // update the status of the order
-    if (orderExists) {
-      updatedParcel.status = 'cancelled';
-    }
-    // return the updated order
-    const parcelIndex = parcels.indexOf(orderExists);
-    parcels.splice(parcelIndex, 1, updatedParcel);
-    return res.status(200).json(updatedParcel);
   }),
 };
 
