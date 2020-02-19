@@ -2,9 +2,6 @@ import chaiHttp from 'chai-http';
 import chai from 'chai';
 import app from '../app';
 
-// import parcelData from '../data/parcelData';
-const allParcels = require('../data/parcelData')
-
 chai.use(chaiHttp);
 chai.should();
 

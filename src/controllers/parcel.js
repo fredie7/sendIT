@@ -22,7 +22,6 @@ const parcelController = {
   }),
 
   editParcel: ((req, res) => {
-    console.log(parcels)
     const foundParcel = parcels.find((parcel) => parcel.id === req.params.parcelId);
     if (!foundParcel) {
       return res.status(404).json({ error: 'parcel not found' });
