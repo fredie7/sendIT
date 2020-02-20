@@ -4,7 +4,6 @@ import parcels from '../data/parcels';
 
 const parcelController = {
   createParcel: ((req, res) => {
-    console.log(parcels)
     const newParcel = {
       id: uuidV4(),
       createdBy: req.decoded.id,
