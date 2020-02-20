@@ -266,7 +266,7 @@ describe('PUT /api/v1/parcels/:parcelId', () => {
     });
   });
 
-  describe.only('PUT /api/parcels/parcelId/changeParcelLocation', () => {
+  describe('PUT /api/parcels/parcelId/changeParcelLocation', () => {
     const user = {
       id: null,
       token: null,
