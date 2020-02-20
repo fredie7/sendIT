@@ -1,8 +1,10 @@
 import uuidV4 from 'uuid/v4';
 import parcels from '../data/parcels';
 
+
 const parcelController = {
   createParcel: ((req, res) => {
+    console.log(parcels)
     const newParcel = {
       id: uuidV4(),
       createdBy: req.decoded.id,
@@ -63,8 +65,7 @@ const parcelController = {
     const updatedParcel = {
       ...foundParcel,
       status: 'cancelled',
-    }
-
+    };
     const parcelIndex = parcels.indexOf(foundParcel);
     parcels.splice(parcelIndex, 1, updatedParcel);
     return res.status(200).json(updatedParcel);
@@ -82,6 +83,21 @@ const parcelController = {
     const parcelIndex = parcels.indexOf(foundParcel);
     parcels.splice(parcelIndex, 1, updatedParcelLocation)
     return res.status(200).json(updatedParcelLocation);
+  }),
+
+  changeParcelDestination: ((req, res) => {
+    const foundParcel = parcels.find((parcel) => parcel.id === req.params.parcelId);
+    let updatedDeliveryLocation = { };
+    if (!foundParcel) {
+      return res.status(404).json({ error: 'parcel not found' });
+    }
+    updatedDeliveryLocation = {
+      ...foundParcel,
+      deliveryLocation: req.body.deliveryLocation,
+    };
+    const parcelIndex = parcels.indexOf(foundParcel);
+    parcels.splice(parcelIndex, 1, updatedDeliveryLocation)
+    return res.status(200).json(updatedDeliveryLocation);
   }),
 };
 
