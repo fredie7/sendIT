@@ -341,6 +341,15 @@ describe('PUT /api/v1/parcels/:parcelId', () => {
           done();
         });
     });
+
+    it('fails when a wrong or non-existent parcelId is used in the request', (done) => {
+      chai.request(app)
+        .get('/api/v1/parcels/878dd/destination')
+        .end((err, res) => {
+          res.should.have.status(404);
+          done();
+        })
+    })
   });
 });
 
