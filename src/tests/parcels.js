@@ -348,8 +348,21 @@ describe('PUT /api/v1/parcels/:parcelId', () => {
         .end((err, res) => {
           res.should.have.status(404);
           done();
-        })
-    })
+        });
+    });
+
+    it('fails when no delivery location is provided', (done) => {
+      const changeDestination = {
+        deliveryLocation: '',
+      };
+      chai.request(app)
+        .put(`/api/v1/parcels/${parcelData.id}/destination`)
+        .send(changeDestination)
+        .end((err, res) => {
+          res.should.have.status(403);
+          done();
+        });
+    });
   });
 });
 
