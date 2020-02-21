@@ -96,7 +96,7 @@ const parcelController = {
       deliveryLocation: req.body.deliveryLocation,
     };
     const parcelIndex = parcels.indexOf(foundParcel);
-    parcels.splice(parcelIndex, 1, updatedDeliveryLocation)
+    parcels.splice(parcelIndex, 1, updatedDeliveryLocation);
     return res.status(200).json(updatedDeliveryLocation);
   }),
 };
