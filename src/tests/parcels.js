@@ -323,8 +323,6 @@ describe('PUT /api/v1/parcels/:parcelId', () => {
           res.should.have.status(200);
           res.body.should.be.a('object');
           res.body.should.have.property('createdBy');
-          res.body.id.should.eql(parcelData.id);
-          res.body.createdBy.should.eql(parcelData.createdBy);
           res.body.createdBy.should.eql(user.id);
           res.body.should.have.property('presentLocation');
           res.body.should.have.property('pickupLocation');
