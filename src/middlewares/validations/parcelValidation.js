@@ -3,7 +3,7 @@ const parcelValidation = {
     req.check('pickupLocation', 'enter your pickup location').notEmpty();
     req.check('presentLocation', 'enter your present location').notEmpty();
     req.check('deliveryLocation', 'enter your delivery location').notEmpty().optional();
-    req.check('presentLocation').isLength({ min: 2, max: 20 }).withMessage('content should be betweek 2 - 20 characters');
+    req.check('presentLocation').isLength({ min: 2, max: 20 }).withMessage('content should be between 2 - 20 characters');
     req.check('receiverPhone', 'enter receiver\'s phone number').notEmpty();
     req.check('receiverEmail').isEmail().withMessage('provide a valid email').notEmpty();
     req.check('description', 'a brief description of parcel is required').notEmpty();

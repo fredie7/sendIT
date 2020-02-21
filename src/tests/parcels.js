@@ -266,3 +266,79 @@ describe('PUT /api/v1/parcels/:parcelId', () => {
     });
   });
 });
+
+
+describe('GET /api/v1/parcels/:parcelId', () => {
+  const user = {
+    id: null,
+    token: null,
+    email: 'felix2@test.com',
+    password: 'jayjay1',
+    name: 'felix',
+  };
+  const parcelData = {
+    pickupLocation: 'ikeja',
+    deliveryLocation: 'maryland',
+    presentLocation: 'ogba',
+    receiverPhone: '08076543245',
+    receiverEmail: 'john@gmail.com',
+    description: 'john dummy desc desc',
+    weight: '12',
+  };
+  const signupData = {
+    name: user.name,
+    email: user.email,
+    password: user.password,
+  };
+  const signinData = {
+    email: user.email,
+    password: user.password,
+  };
+
+  before(async () => {
+    let res = await chai.request(app)
+      .post('/api/v1/auth/signup')
+      .send(signupData);
+    user.id = res.body.id;
+
+    res = await chai.request(app)
+      .post('/api/v1/auth/signin')
+      .send(signinData);
+    user.token = res.body.token;
+
+    res = await chai.request(app)
+      .post('/api/v1/parcels')
+      .set('authorization', user.token)
+      .send(parcelData);
+    parcelData.id = res.body.id;
+    parcelData.createdBy = res.body.createdBy;
+  });
+
+  it('should return one parcel', (done) => {
+    chai.request(app)
+      .get(`/api/v1/parcels/${parcelData.id}`)
+      .set('authorization', user.token)
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.id.should.eql(parcelData.id);
+        res.body.createdBy.should.eql(parcelData.createdBy);
+        res.body.pickupLocation.should.eql(parcelData.pickupLocation);
+        res.body.deliveryLocation.should.eql(parcelData.deliveryLocation);
+        res.body.presentLocation.should.eql(parcelData.presentLocation);
+        res.body.receiverPhone.should.eql(parcelData.receiverPhone);
+        res.body.receiverEmail.should.eql(parcelData.receiverEmail);
+        res.body.description.should.eql(parcelData.description);
+        res.body.weight.should.eql(parcelData.weight);
+        done();
+      });
+  });
+  it('fails when a wrong or missing parcel id is supplied in the request', (done) => {
+    chai.request(app)
+      .get('/api/v1/parcels/890fh90')
+      .set('authorization', user.token)
+      .end((err, res) => {
+        res.should.have.status(404);
+        done();
+      });
+  });
+});
