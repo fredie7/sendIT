@@ -332,4 +332,13 @@ describe('GET /api/v1/parcels/:parcelId', () => {
         done();
       });
   });
+  it('fails when a wrong or missing parcel id is supplied in the request', (done) => {
+    chai.request(app)
+      .get('/api/v1/parcels/890fh90')
+      .set('authorization', user.token)
+      .end((err, res) => {
+        res.should.have.status(404);
+        done();
+      });
+  });
 });
