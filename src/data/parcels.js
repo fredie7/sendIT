@@ -2,7 +2,7 @@ import uuidV4 from 'uuid/v4';
 import users from './users';
 
 
-const parcelData = [
+const parcels = [
   {
     id: uuidV4(),
     createdBy: users[0].id,
@@ -47,4 +47,4 @@ const parcelData = [
   },
 ];
 
-export default parcelData;
+export default parcels;
