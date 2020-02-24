@@ -70,7 +70,7 @@ const parcelController = {
     if (!foundParcel) {
       return res.status(404).json({error: 'parcel not found'});
     }
-    return res.json({ message: 'parcel order cancelled' })
+    return res.json({ message: 'parcel order cancelled' });
   }),
 };
 
