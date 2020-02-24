@@ -1,10 +1,9 @@
 import express from 'express';
 import parcelController from '../controllers/parcel';
-import middlewares from '../middlewares/auth';
+import { verifyToken } from '../middlewares/auth';
 import parcelValidation from '../middlewares/validations/parcelValidation';
 
 const { createParcelValidation, editParcelValidation } = parcelValidation;
-const { verifyToken } = middlewares;
 const {
   createParcel,
   editParcel,

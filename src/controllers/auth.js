@@ -1,26 +1,15 @@
 import uuidV4 from 'uuid/v4';
 import data from '../data/users';
 
-
 const jwt = require('jsonwebtoken');
 require('dotenv').config()
 
 const jwtExpiryTime = 3600;
 
-const newID = () => {
-  let id;
-  if (data.length > 0) {
-    id = data[data.length - 1].id + 1;
-  } else {
-    id = 1;
-  }
-  return id;
-};
-
 const authController = {
   signup: (req, res) => {
-    const userExists = data.find((user) => user.email === req.body.email);
-    if (userExists) {
+    const existingUser = data.find((user) => user.email === req.body.email);
+    if (existingUser) {
       return res.status(401).json({ error: 'user already exists' });
     }
     const newUser = {
