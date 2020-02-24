@@ -44,11 +44,11 @@ const parcelController = {
   }),
 
   getOneParcel: ((req, res) => {
-    const parcel = parcels.find((parcel) => parcel.id === req.params.parcelId);
-    if (!parcel) {
+    const foundParcel = parcels.find((parcel) => parcel.id === req.params.parcelId);
+    if (!foundParcel) {
       return res.status(404).json({ error: 'parcel not found' });
     }
-    return res.status(200).json(parcel);
+    return res.status(200).json(foundParcel);
   }),
 
   cancelParcelOrder: ((req, res) => {
@@ -65,10 +65,10 @@ const parcelController = {
     };
     parcels.push(newParcel);
 
-    const foundParcel = parcels.find(parcel => parcel.id === newParcel.id);
-  
+    const foundParcel = parcels.find((parcel) => parcel.id === newParcel.id);
+
     if (!foundParcel) {
-      return res.status(404).json({error: 'parcel not found'});
+      return res.status(404).json({ error: 'parcel not found' });
     }
     return res.json({ message: 'parcel order cancelled' });
   }),
