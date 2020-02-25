@@ -2,9 +2,8 @@ import jwt from 'jsonwebtoken';
 
 require('dotenv').config();
 
-export const verifyToken = (req, res, next) => {
+const verifyToken = (req, res, next) => {
   const token = req.headers.authorization;
-
   if (!token) {
     return res.status(403).json({ error: 'user unauthorized' });
   }
@@ -16,4 +15,5 @@ export const verifyToken = (req, res, next) => {
     req.decoded = authData;
     next();
   });
-}
+};
+export default verifyToken;

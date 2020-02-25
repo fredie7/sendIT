@@ -51,7 +51,7 @@ const parcelController = {
   }),
 
   cancelParcelOrder: ((req, res) => {
-    const foundParcel = parcels.find((parcel) => parcel.id === newParcel.id);
+    const foundParcel = parcels.find((parcel) => parcel.id === req.params.id);
     if (!foundParcel) {
       return res.status(404).json({ error: 'parcel not found' });
     }
@@ -62,12 +62,26 @@ const parcelController = {
 
     const updatedParcel = {
       ...foundParcel,
-      status: 'cancelled'
+      status: 'cancelled',
     }
 
     const parcelIndex = parcels.indexOf(foundParcel);
     parcels.splice(parcelIndex, 1, updatedParcel);
     return res.status(200).json(updatedParcel);
+  }),
+
+  changeParcelPresentLocation: ((req, res) => {
+    const foundParcel = parcels.find((parcel) => parcel.id === req.params.parcelId)
+    if (!foundParcel) {
+      return res.status(404).json({ error: 'parcel not found' })
+    }
+    const updatedParcelLocation = {
+      ...foundParcel,
+      presentLocation: req.body.presentLocation,
+    }
+    const parcelIndex = parcels.indexOf(foundParcel);
+    parcels.splice(parcelIndex, 1, updatedParcelLocation)
+    return res.status(200).json(updatedParcelLocation);
   }),
 };
 
