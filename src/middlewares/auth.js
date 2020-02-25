@@ -2,19 +2,18 @@ import jwt from 'jsonwebtoken';
 
 require('dotenv').config();
 
-const middleWares = {
-  verifyToken: (req, res, next) => {
-    const token = req.headers.authorization;
-    if (!token) {
-      return res.status(403).json({ error: 'user unauthorized' });
+const verifyToken = (req, res, next) => {
+  const token = req.headers.authorization;
+  if (!token) {
+    return res.status(403).json({ error: 'user unauthorized' });
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, authData) => {
+    if (err) {
+      return res.status(403).json({ error: 'unauthorized' });
     }
-    jwt.verify(token, process.env.JWT_SECRET, (err, authData) => {
-      if (err) {
-        return res.status(403).json({ error: 'unauthorized' });
-      }
-      req.decoded = authData;
-      next();
-    });
-  },
+    req.decoded = authData;
+    next();
+  });
 };
-export default middleWares;
+export default verifyToken;

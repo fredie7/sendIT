@@ -1,6 +1,6 @@
 import express from 'express';
 import parcelController from '../controllers/parcel';
-import middlewares from '../middlewares/auth';
+import verifyToken from '../middlewares/auth';
 import parcelValidation from '../middlewares/validations/parcelValidation';
 
 const { createParcelValidation, editParcelValidation, parcelLocationValidation } = parcelValidation;
@@ -11,7 +11,6 @@ const {
   cancelParcelOrder,
   changeParcelPresentLocation,
 } = parcelController;
-const { verifyToken } = middlewares;
 
 const router = express.Router();
 
