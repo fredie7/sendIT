@@ -75,28 +75,27 @@ const parcelController = {
     if (!foundParcel) {
       return res.status(404).json({ error: 'parcel not found' })
     }
-    const updatedParcelLocation = {
+    const updatedParcel = {
       ...foundParcel,
       presentLocation: req.body.presentLocation,
     }
     const parcelIndex = parcels.indexOf(foundParcel);
-    parcels.splice(parcelIndex, 1, updatedParcelLocation)
-    return res.status(200).json(updatedParcelLocation);
+    parcels.splice(parcelIndex, 1, updatedParcel)
+    return res.status(200).json(updatedParcel);
   }),
 
   changeParcelDestination: ((req, res) => {
     const foundParcel = parcels.find((parcel) => parcel.id === req.params.parcelId);
-    let updatedDeliveryLocation = { };
     if (!foundParcel) {
       return res.status(404).json({ error: 'parcel not found' });
     }
-    updatedDeliveryLocation = {
+    const updatedParcel = {
       ...foundParcel,
       deliveryLocation: req.body.deliveryLocation,
     };
     const parcelIndex = parcels.indexOf(foundParcel);
-    parcels.splice(parcelIndex, 1, updatedDeliveryLocation);
-    return res.status(200).json(updatedDeliveryLocation);
+    parcels.splice(parcelIndex, 1, updatedParcel);
+    return res.status(200).json(updatedParcel);
   }),
 };
 
