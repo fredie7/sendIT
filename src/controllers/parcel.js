@@ -98,6 +98,11 @@ const parcelController = {
     parcels.splice(parcelIndex, 1, updatedParcel);
     return res.status(200).json(updatedParcel);
   }),
+
+  getAllParcels: ((req, res) => {
+    return res.status(200).json(parcels);
+  }),
+
 };
 
 export default parcelController;

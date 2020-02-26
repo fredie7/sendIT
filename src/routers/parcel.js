@@ -16,6 +16,7 @@ const {
   cancelParcelOrder,
   changeParcelLocation,
   changeParcelDestination,
+  getAllParcels,
 } = parcelController;
 
 
@@ -27,6 +28,7 @@ router.get('/parcels/:parcelId', verifyToken, getOneParcel);
 router.put('/parcels/:parcelId/cancel', verifyToken, cancelParcelOrder);
 router.put('/parcels/:parcelId/changeLocation', verifyToken, parcelLocationValidation, changeParcelLocation)
 router.put('/parcels/:parcelId/destination', verifyToken, parceDestinationlValidation, changeParcelDestination);
+router.get('/parcels', verifyToken, getAllParcels);
 
 
 module.exports = router;
