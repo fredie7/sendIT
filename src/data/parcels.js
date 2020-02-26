@@ -15,7 +15,7 @@ const parcels = [
     weight: '12',
     createdAt: new Date(),
     updatedAt: new Date(),
-    status: 'pending',
+    status: 'delivered',
   },
   {
     id: uuidV4(),

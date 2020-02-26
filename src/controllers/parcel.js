@@ -1,8 +1,10 @@
 import uuidV4 from 'uuid/v4';
 import parcels from '../data/parcels';
 
+
 const parcelController = {
   createParcel: ((req, res) => {
+    console.log(parcels)
     const newParcel = {
       id: uuidV4(),
       createdBy: req.decoded.id,
@@ -51,37 +53,50 @@ const parcelController = {
   }),
 
   cancelParcelOrder: ((req, res) => {
-    const foundParcel = parcels.find((parcel) => parcel.id === req.params.id);
+    const foundParcel = parcels.find((parcel) => parcel.id === req.params.parcelId);
+    console.log(foundParcel)
     if (!foundParcel) {
       return res.status(404).json({ error: 'parcel not found' });
     }
 
     if (foundParcel.status === 'delivered') {
-      return res.status(401).json({ error: 'can\'t change status. parcel has already been delivered' });
+      return res.status(401).json({ error: 'parcel has already been delivered' });
     }
-
     const updatedParcel = {
       ...foundParcel,
       status: 'cancelled',
-    }
-
+    };
     const parcelIndex = parcels.indexOf(foundParcel);
     parcels.splice(parcelIndex, 1, updatedParcel);
     return res.status(200).json(updatedParcel);
   }),
 
-  changeParcelPresentLocation: ((req, res) => {
+  changeParcelLocation: ((req, res) => {
     const foundParcel = parcels.find((parcel) => parcel.id === req.params.parcelId)
     if (!foundParcel) {
       return res.status(404).json({ error: 'parcel not found' })
     }
-    const updatedParcelLocation = {
+    const updatedParcel = {
       ...foundParcel,
       presentLocation: req.body.presentLocation,
     }
     const parcelIndex = parcels.indexOf(foundParcel);
-    parcels.splice(parcelIndex, 1, updatedParcelLocation)
-    return res.status(200).json(updatedParcelLocation);
+    parcels.splice(parcelIndex, 1, updatedParcel)
+    return res.status(200).json(updatedParcel);
+  }),
+
+  changeParcelDestination: ((req, res) => {
+    const foundParcel = parcels.find((parcel) => parcel.id === req.params.parcelId);
+    if (!foundParcel) {
+      return res.status(404).json({ error: 'parcel not found' });
+    }
+    const updatedParcel = {
+      ...foundParcel,
+      deliveryLocation: req.body.deliveryLocation,
+    };
+    const parcelIndex = parcels.indexOf(foundParcel);
+    parcels.splice(parcelIndex, 1, updatedParcel);
+    return res.status(200).json(updatedParcel);
   }),
 };
 

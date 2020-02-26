@@ -47,7 +47,17 @@ const parcelValidation = {
     req.check('description', 'a brief description of parcel is required').notEmpty().optional();
     req.check('description').isLength({ min: 20, max: 200 }).withMessage('content description should be between 20 - 200 characters').optional();
     req.check('weight', 'fill in appropriate weight measure').notEmpty().optional();
+    const errors = req.validationErrors();
+    if (errors) {
+      const firstError = errors.map((err) => err.msg)[0];
+      return res.status(422).json({ error: firstError });
+    }
+    next();
+  },
 
+
+  parceDestinationlValidation: (req, res, next) => {
+    req.check('deliveryLocation', 'enter your delivery location').notEmpty().optional();
     const errors = req.validationErrors();
     if (errors) {
       const firstError = errors.map((err) => err.msg)[0];

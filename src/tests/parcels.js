@@ -302,7 +302,7 @@ describe('PUT /api/v1/parcels/:parcelId', () => {
         .post('/api/v1/auth/signin')
         .send(signInData);
       user.token = res.body.token;
-      
+        
       res = await chai.request(app)
         .post('/api/v1/parcels')
         .set('authorization', user.token)
@@ -338,6 +338,28 @@ describe('PUT /api/v1/parcels/:parcelId', () => {
           res.body.receiverEmail.should.eql(parcelData.receiverEmail);
           res.body.description.should.eql(parcelData.description);
           res.body.weight.should.eql(parcelData.weight);
+          done();
+        });
+    });
+
+    it('fails when a wrong or non-existent parcelId is used in the request', (done) => {
+      chai.request(app)
+        .get('/api/v1/parcels/878dd/destination')
+        .end((err, res) => {
+          res.should.have.status(404);
+          done();
+        });
+    });
+
+    it('fails when no delivery location is provided', (done) => {
+      const changeDestination = {
+        deliveryLocation: '',
+      };
+      chai.request(app)
+        .put(`/api/v1/parcels/${parcelData.id}/destination`)
+        .send(changeDestination)
+        .end((err, res) => {
+          res.should.have.status(403);
           done();
         });
     });
@@ -413,6 +435,110 @@ describe('GET /api/v1/parcels/:parcelId', () => {
     chai.request(app)
       .get('/api/v1/parcels/890fh90')
       .set('authorization', user.token)
+      .end((err, res) => {
+        res.should.have.status(404);
+        done();
+      });
+  });
+});
+
+describe('PUT /api/V1/parcels/parcelId/destination', () => {
+  const user = {
+    id: null,
+    token: null,
+    email: 'felix@email.com',
+    password: 'felix123',
+  };
+
+  const signUpData = {
+    name: user.name,
+    email: user.email,
+    password: user.password,
+  };
+
+  const signInData = {
+    email: user.email,
+    password: user.password,
+  };
+
+  const parcelData = {
+    pickupLocation: 'ikeja',
+    deliveryLocation: 'maryland',
+    presentLocation: 'ogba',
+    receiverPhone: '08076543245',
+    receiverEmail: 'john@gmail.com',
+    description: 'john dummy desc desc',
+    weight: '12',
+  };
+
+  before(async () => {
+    let res = await chai.request(app)
+      .post('/api/v1/auth/signup')
+      .send(signUpData)
+    user.id = res.body.id;
+
+    res = await chai.request(app)
+      .post('/api/v1/auth/signin')
+      .send(signInData)
+    user.token = res.body.token;
+
+    res = await chai.request(app)
+      .post('/api/v1/parcels')
+      .set('authorization', user.token)
+      .send(parcelData);
+    parcelData.id = res.body.id;
+    parcelData.createdBy = res.body.createdBy;
+  });
+
+  it('changes the parcel delivery destination', (done) => {
+    const changeParcelDestination = {
+      deliveryLocation: 'leventis',
+    };
+    chai.request(app)
+      .put(`/api/v1/parcels/${parcelData.id}/destination`)
+      .set('authorization', user.token)
+      .send(changeParcelDestination)
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.should.be.a('object');
+        res.body.should.have.property('id');
+        res.body.id.should.eql(parcelData.id);
+        res.body.should.have.property('createdBy');
+        res.body.createdBy.should.eql(parcelData.createdBy);
+        res.body.should.have.property('pickupLocation');
+        res.body.should.have.property('deliveryLocation');
+        res.body.should.have.property('presentLocation');
+        res.body.should.have.property('receiverPhone');
+        res.body.should.have.property('receiverEmail');
+        res.body.should.have.property('description');
+        res.body.should.have.property('weight');
+        res.body.deliveryLocation.should.eql(changeParcelDestination.deliveryLocation);
+        res.body.pickupLocation.should.eql(parcelData.pickupLocation);
+        res.body.presentLocation.should.eql(parcelData.presentLocation);
+        res.body.receiverPhone.should.eql(parcelData.receiverPhone);
+        res.body.receiverEmail.should.eql(parcelData.receiverEmail);
+        res.body.description.should.eql(parcelData.description);
+        res.body.weight.should.eql(parcelData.weight);
+        done();
+      });
+  });
+
+  it('fails when no delivery location is provided', (done) => {
+    const changeDestination = {
+      deliveryLocation: '',
+    };
+    chai.request(app)
+      .put(`/api/v1/parcels/${parcelData.id}/destination`)
+      .send(changeDestination)
+      .end((err, res) => {
+        res.should.have.status(403);
+        done();
+      });
+  });
+
+  it('fails when a wrong or non-existent parcelId is used in the request', (done) => {
+    chai.request(app)
+      .get('/api/v1/parcels/878dd/destination')
       .end((err, res) => {
         res.should.have.status(404);
         done();
