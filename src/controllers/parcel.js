@@ -63,7 +63,7 @@ const parcelController = {
       description: req.body.description,
       weight: req.body.weight,
     };
-    parcels.push(newParcel);
+    parcels.push(newParcel)
 
     const foundParcel = parcels.find((parcel) => parcel.id === newParcel.id);
 
