@@ -1,6 +1,6 @@
 import { pool } from 'pg';
-import db, { connectionString } from '../db';
-// import logger from '../services/logger';
+import db, { connectionString } from './index';
+import logger from '../services/logger';
 // import seedData from '../db/seed';
 // import seedDatabase from '../db/seed';
 
@@ -28,12 +28,12 @@ CREATE TABLE IF NOT EXIST Parcels (
 )
 `;
 
-db.on('connect', () => {
-  console.log('CONNECTED TO DATABASE');
-})
-
 db.query(queryText)
   .then((result) => {
     logger.info(result);
+    process.exit(0);
   })
-  .catch((error) => logger.info(error));
+  .catch((error) => {
+      logger.info(error)
+      process.exit(1);
+    });

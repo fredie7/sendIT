@@ -9,16 +9,6 @@ import { Pool } from 'pg';
 import authRoute from './routers/auth';
 import parcelRoutes from './routers/parcel';
 
-dotenv.config();
-// const db = new Pool({ connectionString: 'postgresql://postgres@localhost:5432/sendit' });
-// console.log(db);
-
-
-// db.on('connect', () => {
-//   console.log('connected to the database');
-// });
-
-
 const app = express();
 
 app.use(express.json());
