@@ -5,7 +5,7 @@ import ParcelModel from '../models/parcels';
 dotenv.config();
 
 const User = new UserModel();
-const Parcel = new ParcelModel();
+const Parcel = new ParcelModel()
 
 const seedDatabase = async () => {
   const users = [
