@@ -10,6 +10,7 @@
     "build": "babel src --out-dir build",
     "test": "nyc mocha --require @babel/register  --timeout 5000 --exit src/tests",
     "coveralls": "cat ./coverage/lcov.info | node node_modules/.bin/coveralls",
+    "migrate": "babel-node src/db/migration",
     "heroku-postbuild": "npm run build"
   },
   "keywords": [],

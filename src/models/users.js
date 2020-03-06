@@ -1,15 +1,14 @@
 import db from '../db'
 import logger from '../services/logger';
-import users from '../src/data/users';
+import users from '../../src/data/users';
 
 class Users {
   async create(data) {
-    const createQuery = `INSERT INTO users ("id", "name", "email", "password")
+    const createQuery = `INSERT INTO users ("name", "email", "password")
      VALUES($1, $2, $3, $4)
      returning *`;
   
   const values = [
-      data.id,
       data.name,
       data.email,
       data.password,

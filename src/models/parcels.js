@@ -1,21 +1,21 @@
 import db from '../db';
-import logger from '../services/logger'
+import logger from '../services/logger';
 
 class Parcels {
   async parcel(data) {
-    const createParcel = `INSERT INTO parcels "id","pickupLocation","deliveryLocation","presentLocation","receiverPhone"
+    const createParcel = `INSERT INTO parcels pickupLocation","deliveryLocation","presentLocation","receiverPhone"
     ,"receiverEmail","description","weight","createdAt","updatedAt","status" returning *`;
     const values = [
-        data.id,
-        data.createdBy,
-        data.pickupLocation,
-        data.deliveryLocation,
-        data.presentLocation,
-        data.receiverPhone,
-        data.receiverEmail,
-        data.description,
-        data.weight,
-        data.status
+      data.pickupLocation,
+      data.deliveryLocation,
+      data.presentLocation,
+      data.receiverPhone,
+      data.receiverEmail,
+      data.description,
+      data.weight,
+      data.createdAt,
+      data.updatedAt,
+      data.status 
     ]
 
     try {
@@ -27,24 +27,24 @@ class Parcels {
     }
   };
 
-    async getById(id) {
-        const text = `SELECT * FROM parcels WHERE id = $1`;
-        try {
-            const { rows } = await db.query(text, [id]);
-            return rows[0];
-        } catch (error) {
-            return error;
-        }
-    };
-
-    async getByField(field, value) {
-        const text =   `SELECT * FROM parcels WHERE '${FIELD}' = $1`;
-        try {
-            const { rows } = await db.query(text, [value])
-        } catch (error) {
-            return error;
-        }
+async getById(id) {
+    const text = `SELECT * FROM parcels WHERE id = $1`;
+    try {
+        const { rows } = await db.query(text, [id]);
+        return rows[0];
+    } catch (error) {
+        return error;
     }
+};
+
+async getByField(field, value) {
+    const text =   `SELECT * FROM parcels WHERE '${field}' = $1`;
+    try {
+        const { rows } = await db.query(text, [value])
+    } catch (error) {
+        return error;
+    }
+}
       
 }
 

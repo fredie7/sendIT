@@ -1,5 +1,4 @@
 import dotenv from 'dotenv';
-import uuidv4 from 'uuid/v4';
 import UserModel from '../models/users';
 import ParcelModel from '../models/parcels';
 
@@ -8,22 +7,19 @@ dotenv.config();
 const User = new UserModel();
 const Parcel = new ParcelModel();
 
-const seedDatabase = async ()=> {
+const seedDatabase = async () => {
   const users = [
     {
-      id: uuidv4(),
       name: 'gabby',
       email: 'gabby@gmail.com',
       password: 'gabbypassword',
     },
     {
-      id: uuidv4(),
       name: 'tarik',
       email: 'tarik@gmail.com',
       password: 'tarikpassword',
     },
     {
-      id: uuidv4(),
       name: 'jizael',
       email: 'jizael@gmail.com',
       password: 'jizaelpassword',
@@ -39,7 +35,6 @@ const seedDatabase = async ()=> {
 
   const parcels = [
     {
-      id: uuidV4(),
       createdBy: insertedUsers[0].id,
       pickupLocation: 'ikeja',
       deliveryLocation: 'maryland',
@@ -53,7 +48,6 @@ const seedDatabase = async ()=> {
       status: 'delivered',
     },
     {
-      id: uuidV4(),
       createdBy: insertedUsers[0].id,
       pickupLocation: 'abuja',
       deliveryLocation: 'fct',
@@ -67,7 +61,6 @@ const seedDatabase = async ()=> {
       status: 'pending',
     },
     {
-      id: uuidV4(),
       createdBy: insertedUsers[0].id,
       pickupLocation: 'delta',
       deliveryLocation: 'asaba',
