@@ -5,7 +5,7 @@ import users from '../../src/data/users';
 class Users {
   async create(data) {
     const createQuery = `INSERT INTO users ("name", "email", "password")
-     VALUES($1, $2, $3, $4)
+     VALUES($1, $2, $3)
      returning *`;
   
   const values = [

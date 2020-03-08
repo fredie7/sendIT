@@ -5,7 +5,7 @@ import ParcelModel from '../models/parcels';
 dotenv.config();
 
 const User = new UserModel();
-const Parcel = new ParcelModel()
+const Parcel = new ParcelModel();
 
 const seedDatabase = async () => {
   const users = [
@@ -29,9 +29,9 @@ const seedDatabase = async () => {
   const seedUsers = users.map(async (userData) => {
     const newUser = await User.create(userData);
     return newUser;
-  })
-
+  });
   const insertedUsers = await Promise.all(seedUsers);
+  console.log('seeded users', seedUsers);
 
   const parcels = [
     {
@@ -74,5 +74,11 @@ const seedDatabase = async () => {
       status: 'pending',
     },
   ];
+
+  const seedParcels = parcels.map(async (parcelData) => {
+    const newParcel = await Parcel.create(parcelData);
+    return newParcel;
+  });
+  console.log('seeded parcels', seedParcels);
 };
 export default seedDatabase;

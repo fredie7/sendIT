@@ -25,21 +25,26 @@ CREATE TABLE IF NOT EXISTS parcels (
   "receiverPhone" VARCHAR(20) NOT NULL,
   "receiverEmail" VARCHAR(100) UNIQUE NOT NULL,
   "presentLocation" VARCHAR(100) NOT NULL,
-  "weight" VARCHAR(11) NOT NULL
+  "weight" INT NOT NULL,
+  "status" VARCHAR(20) NOT NULL,
+  "createdAt" VARCHAR(40) NOT NULL,
+  "updatedAt" VARCHAR(40) NOT NULL
 );
 `;
 
 const dBase = new Pool({ connectionString });
 
-dBase.on('connect', ()=> {
+dBase.on('connect', () => {
   logger.info('CONNECTED TO DATABASE');
-  seedDatabase();
-})
+  // seedDatabase();
+});
 
 db.query(queryText)
   .then((result) => {
     logger.info(result);
-    process.exit(0);
+    seedDatabase().then(() => {
+      process.exit(0);
+    });
   })
   .catch((error) => {
     logger.info(error);

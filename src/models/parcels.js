@@ -1,10 +1,14 @@
 import db from '../db';
 import logger from '../services/logger';
+import parcels from '../../src/data/parcels';
 
 class Parcels {
-  async parcel(data) {
-    const createParcel = `INSERT INTO parcels pickupLocation","deliveryLocation","presentLocation","receiverPhone"
-    ,"receiverEmail","description","weight","createdAt","updatedAt","status" returning *`;
+  async create(data) {
+    const createParcel = `INSERT INTO 
+    parcels "pickupLocation", "deliveryLocation", "presentLocation", "receiverPhone"
+    , "receiverEmail", "description", "weight", "createdAt", "updatedAt", "status" returning *
+    VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+    returning *`;
     const values = [
       data.pickupLocation,
       data.deliveryLocation,
@@ -15,34 +19,35 @@ class Parcels {
       data.weight,
       data.createdAt,
       data.updatedAt,
-      data.status 
+      data.status,
     ]
 
     try {
-        const { rows } = await db.query(createParcel, values);
-        return rows[0]; 
+      const { rows } = await db.query(createParcel, values);
+      return rows[0]; 
     } catch (error) {
-        logger.error(error)
-        return error
+      logger.error(error);
+      return error;
     }
   };
 
-async getById(id) {
-    const text = `SELECT * FROM parcels WHERE id = $1`;
+  async getById(id) {
+    const text = 'SELECT * FROM parcels WHERE id = $1';
     try {
-        const { rows } = await db.query(text, [id]);
-        return rows[0];
+      const { rows } = await db.query(text, [id]);
+      return rows[0];
     } catch (error) {
-        return error;
+      return error;
     }
-};
+  }
 
-async getByField(field, value) {
-    const text =   `SELECT * FROM parcels WHERE '${field}' = $1`;
+  async getByField(field, value) {
+    const text = `SELECT * FROM parcels WHERE '${field}' = $1`;
     try {
-        const { rows } = await db.query(text, [value])
+      const { rows } = await db.query(text, [value]);
+      return rows[0];
     } catch (error) {
-        return error;
+      return error;
     }
 }
       
