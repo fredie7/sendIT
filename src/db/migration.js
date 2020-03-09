@@ -2,8 +2,6 @@ import { Pool } from 'pg';
 import db, { connectionString } from './index';
 import logger from '../services/logger';
 import seedDatabase from './seed';
-// import seedData from '../db/seed';
-// import seedDatabase from '../db/seed';
 
 const queryText = `
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
