@@ -10,7 +10,8 @@
     "build": "babel src --out-dir build",
     "test": "nyc mocha --require @babel/register  --timeout 5000 --exit src/tests",
     "coveralls": "cat ./coverage/lcov.info | node node_modules/.bin/coveralls",
-    "heroku-postbuild": "npm run build"
+    "migrate": "babel-node src/db/migration",
+    "heroku-postbuild": "npm run build && npm run migrate"
   },
   "keywords": [],
   "author": "",
@@ -27,8 +28,9 @@
     "make-runnable": "^1.3.6",
     "moment": "^2.24.0",
     "morgan": "^1.9.1",
-    "pg": "^7.17.0",
-    "uuid": "^3.4.0"
+    "pg": "^7.18.2",
+    "uuid": "^3.4.0",
+    "winston": "^3.2.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.7.7",
