@@ -36,7 +36,6 @@ const dBase = new Pool({ connectionString });
 
 dBase.on('connect', () => {
   logger.info('CONNECTED TO DATABASE');
-  // seedDatabase();
 });
 
 db.query(queryText)

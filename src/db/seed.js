@@ -31,7 +31,7 @@ const seedDatabase = async () => {
     return newUser;
   });
   const insertedUsers = await Promise.all(seedUsers);
-  console.log('seeded users', seedUsers);
+  console.log('seeded users', insertedUsers);
 
   const parcels = [
     {
@@ -79,6 +79,7 @@ const seedDatabase = async () => {
     const newParcel = await Parcel.create(parcelData);
     return newParcel;
   });
-  console.log('seeded parcels', seedParcels);
+  const insertedParcels = await Promise.all(seedParcels);
+  console.log('seeded parcels', insertedParcels);
 };
 export default seedDatabase;

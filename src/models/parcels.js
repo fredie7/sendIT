@@ -4,9 +4,18 @@ import parcels from '../../src/data/parcels';
 
 class Parcels {
   async create(data) {
-    const createParcel = `INSERT INTO 
-    parcels "pickupLocation", "deliveryLocation", "presentLocation", "receiverPhone"
-    , "receiverEmail", "description", "weight", "createdAt", "updatedAt", "status" returning *
+    const createParcel = `INSERT INTO parcels (
+        "pickupLocation", 
+        "deliveryLocation", 
+        "presentLocation", 
+        "receiverPhone",
+        "receiverEmail", 
+        "description", 
+        "weight", 
+        "createdAt", 
+        "updatedAt", 
+        "status"
+      )
     VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
     returning *`;
     const values = [
