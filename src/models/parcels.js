@@ -1,6 +1,5 @@
 import db from '../db';
 import logger from '../services/logger';
-import parcels from '../../src/data/parcels';
 
 class Parcels {
   async create(data) {
