@@ -1,7 +1,7 @@
 import db from '../db';
 import logger from '../services/logger';
 
-class Parcels {
+class Parcel {
   async create(data) {
     const createParcel = `INSERT INTO parcels (
         "pickupLocation", 
@@ -57,8 +57,17 @@ class Parcels {
     } catch (error) {
       return error;
     }
-}
-      
+  }
+  
+  async getOneParcel(id) {
+    const text = `SELECT * FROM parcels WHERE id = ${id}`;
+    try {
+      const { rows } = await db.query(text);
+      return rows[0];
+    } catch (error) {
+      return error;
+    }
+  }
 }
 
-export default Parcels;
+export default new Parcel();

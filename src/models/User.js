@@ -1,7 +1,7 @@
 import db from '../db';
 import logger from '../services/logger';
 
-class Users {
+class User {
   async create(data) {
     const createQuery = `INSERT INTO users ("name", "email", "password")
      VALUES($1, $2, $3)
@@ -31,6 +31,26 @@ class Users {
       return error;
     }
   }
+
+  async getByField(field, value) {
+    const text = `SELECT * FROM users WHERE ${field} = $1`;
+    try {
+      const { rows } = await db.query(text, [value]);
+      return rows[0];
+    } catch (error) {
+      return error;
+    }
+  }
+
+  async checkCredentials(email, password) {
+    const text = `SELECT * FROM users WHERE email=${email} && password=${password} RETURNING *`;
+    try {
+      const { rows } = await db.query(text);
+      return rows[0];
+    } catch (error) {
+      return error;
+    }
+  }
 }
 
-export default Users;
+export default new User();

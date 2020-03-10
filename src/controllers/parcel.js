@@ -1,27 +1,13 @@
 import uuidV4 from 'uuid/v4';
 import parcels from '../data/parcels';
+import Parcel from '../models/Parcel';
 
 
 const parcelController = {
-  createParcel: ((req, res) => {
-    console.log(parcels)
-    const newParcel = {
-      id: uuidV4(),
-      createdBy: req.decoded.id,
-      pickupLocation: req.body.pickupLocation,
-      deliveryLocation: req.body.deliveryLocation,
-      presentLocation: req.body.presentLocation,
-      receiverPhone: req.body.receiverPhone,
-      receiverEmail: req.body.receiverEmail,
-      description: req.body.description,
-      weight: req.body.weight,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      status: 'pending',
-    };
-    parcels.push(newParcel);
+  createParcel: async (req, res) => {
+    const newParcel = await Parcel.create(req.body);
     res.status(201).json(newParcel);
-  }),
+  },
 
   editParcel: ((req, res) => {
     const foundParcel = parcels.find((parcel) => parcel.id === req.params.parcelId);
@@ -44,13 +30,13 @@ const parcelController = {
     return res.status(200).json(updatedParcel);
   }),
 
-  getOneParcel: ((req, res) => {
-    const foundParcel = parcels.find((parcel) => parcel.id === req.params.parcelId);
+  getOneParcel: async (req, res) => {
+    const foundParcel = await Parcel.getOneParcel(req.body.id);
     if (!foundParcel) {
       return res.status(404).json({ error: 'parcel not found' });
     }
     return res.status(200).json(foundParcel);
-  }),
+  },
 
   cancelParcelOrder: ((req, res) => {
     const foundParcel = parcels.find((parcel) => parcel.id === req.params.parcelId);

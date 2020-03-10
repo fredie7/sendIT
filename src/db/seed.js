@@ -1,11 +1,11 @@
 import dotenv from 'dotenv';
-import UserModel from '../models/users';
-import ParcelModel from '../models/parcels';
+import User from '../models/User';
+import Parcel from '../models/Parcel';
 
 dotenv.config();
 
-const User = new UserModel();
-const Parcel = new ParcelModel();
+// const User = new UserModel();
+// const Parcel = new ParcelModel();
 
 const seedDatabase = async () => {
   const users = [
@@ -31,6 +31,7 @@ const seedDatabase = async () => {
     return newUser;
   });
   const insertedUsers = await Promise.all(seedUsers);
+  console.log(insertedUsers)
 
   const parcels = [
     {
@@ -79,5 +80,6 @@ const seedDatabase = async () => {
     return newParcel;
   });
   const insertedParcels = await Promise.all(seedParcels);
+  console.log(insertedParcels)
 };
 export default seedDatabase;
