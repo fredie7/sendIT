@@ -1,6 +1,7 @@
 import uuidV4 from 'uuid/v4';
-import parcels from '../data/parcels';
+// import parcels from '../data/parcels';
 import Parcel from '../models/Parcel';
+import db from '../db';
 
 
 const parcelController = {
@@ -9,8 +10,8 @@ const parcelController = {
     res.status(201).json(newParcel);
   },
 
-  editParcel: ((req, res) => {
-    const foundParcel = parcels.find((parcel) => parcel.id === req.params.parcelId);
+  editParcel: async (req, res) => {
+    const foundParcel = Parcel.editOrder(req.body, req.params.parcelId)
     if (!foundParcel) {
       return res.status(404).json({ error: 'parcel not found' });
     }
@@ -25,69 +26,50 @@ const parcelController = {
       weight: req.body.weight || foundParcel.weight,
       updatedAt: new Date(),
     };
-    const parcelIndex = parcels.indexOf(foundParcel);
-    parcels.splice(parcelIndex, 1, updatedParcel);
     return res.status(200).json(updatedParcel);
-  }),
+  },
 
   getOneParcel: async (req, res) => {
-    const foundParcel = await Parcel.getOneParcel(req.body.id);
+    const foundParcel = await Parcel.getOneParcel(req.params.parcelId);
     if (!foundParcel) {
       return res.status(404).json({ error: 'parcel not found' });
     }
     return res.status(200).json(foundParcel);
   },
 
-  cancelParcelOrder: ((req, res) => {
-    const foundParcel = parcels.find((parcel) => parcel.id === req.params.parcelId);
+  cancelParcelOrder: async (req, res) => {
+    const foundParcel = await Parcel.cancelOrder(req.body.status, req.params.parcelId);
     console.log(foundParcel)
     if (!foundParcel) {
       return res.status(404).json({ error: 'parcel not found' });
     }
-
     if (foundParcel.status === 'delivered') {
       return res.status(401).json({ error: 'parcel has already been delivered' });
     }
-    const updatedParcel = {
-      ...foundParcel,
-      status: 'cancelled',
-    };
-    const parcelIndex = parcels.indexOf(foundParcel);
-    parcels.splice(parcelIndex, 1, updatedParcel);
-    return res.status(200).json(updatedParcel);
-  }),
+    res.status(200).json(foundParcel);
+  },
 
-  changeParcelLocation: ((req, res) => {
-    const foundParcel = parcels.find((parcel) => parcel.id === req.params.parcelId)
-    if (!foundParcel) {
-      return res.status(404).json({ error: 'parcel not found' })
-    }
-    const updatedParcel = {
-      ...foundParcel,
-      presentLocation: req.body.presentLocation,
-    }
-    const parcelIndex = parcels.indexOf(foundParcel);
-    parcels.splice(parcelIndex, 1, updatedParcel)
-    return res.status(200).json(updatedParcel);
-  }),
-
-  changeParcelDestination: ((req, res) => {
-    const foundParcel = parcels.find((parcel) => parcel.id === req.params.parcelId);
+  changeParcelLocation: async (req, res) => {
+    const foundParcel = await Parcel.parcelLocation(req.body.pickupLocation, req.params.parcelId);
     if (!foundParcel) {
       return res.status(404).json({ error: 'parcel not found' });
     }
-    const updatedParcel = {
-      ...foundParcel,
-      deliveryLocation: req.body.deliveryLocation,
-    };
-    const parcelIndex = parcels.indexOf(foundParcel);
-    parcels.splice(parcelIndex, 1, updatedParcel);
-    return res.status(200).json(updatedParcel);
-  }),
+    return res.status(200).json(foundParcel);
+  },
 
-  getAllParcels: ((req, res) => {
+  changeParcelDestination: async (req, res) => {
+    const foundParcel = await Parcel.parcelDestination(req.body.deliveryLocation, req.params.parcelId);
+    if (!foundParcel) {
+      return res.status(404).json({ error: 'parcel not found' });
+    }
+    return res.status(200).json(foundParcel);
+  },
+
+  getAllParcels: async (req, res) => {
+    const parcels = await Parcel.getAllParcels();
+    console.log(parcels)
     return res.status(200).json(parcels);
-  }),
+  },
 
 };
 

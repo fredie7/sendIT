@@ -43,9 +43,9 @@ class User {
   }
 
   async checkCredentials(email, password) {
-    const text = `SELECT * FROM users WHERE email=${email} && password=${password} RETURNING *`;
+    const text = 'SELECT * FROM users WHERE email =$1 && password =$2 RETURNING *';
     try {
-      const { rows } = await db.query(text);
+      const { rows } = await db.query(text, [email, password]);
       return rows[0];
     } catch (error) {
       return error;
