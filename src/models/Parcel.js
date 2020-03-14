@@ -80,25 +80,6 @@ class Parcel {
     }
   }
 
-  async parcelLocation(field, id) {
-    const text = 'UPDATE parcels SET "pickupLocation" = $1 WHERE id = $2 RETURNING *';
-    try {
-      const { rows } = await db.query(text, [field, id]);
-      return rows[0];
-    } catch (error) {
-      return error;
-    }
-  }
-
-  async parcelDestination(field, id) {
-    const text = 'UPDATE parcels SET "deliveryLocation" = $1 WHERE id = $2 RETURNING *';
-    try {
-      const { rows } = await db.query(text, [field, id]);
-      return rows[0];
-    } catch (error) {
-      return error;
-    }
-  }
 
   async cancelOrder(field, id) {
     const text = 'UPDATE parcels SET "status" = $1 WHERE id = $2 RETURNING *';
@@ -110,22 +91,21 @@ class Parcel {
     }
   }
 
-  async editOrder(field, id) {
-    const text = `UPDATE parcels SET 
-    "pickupLocation" = $1, 
-    "deliveryLocation" = $2, 
-    "presentLocation" = $3, 
-    "receiverPhone" = $4,
-    "receiverEmail" = $5, 
-    "description" = $6, 
-    "weight" = $7, 
-    "createdAt" = $8, 
-    "updatedAt" = $9, 
-    "status" = $10
-    WHERE id = $11 RETURNING *`;
-
+  async update(data, id) {
+    const fields = Object.keys(data);
+    let setString = '';
+    const placeHolders = [id];
+    fields.forEach((fieldName, index) => {
+      const placeHolderNumber = index + 2;
+      setString = `${setString}, "${fieldName}" = $${placeHolderNumber}`;
+      placeHolders.push(data[fieldName]);
+    });
+    setString = setString.slice(2);
+    const date = new Date().toUTCString();
+    setString = setString + `, "updatedAt" = '${date}'`;
+    const text = `UPDATE parcels SET ${setString} WHERE id = $1 RETURNING *`;
     try {
-      const { rows } = db.query(text, [id]);
+      const { rows } = await db.query(text, placeHolders);
       return rows[0];
     } catch (error) {
       return error;

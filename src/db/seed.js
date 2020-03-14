@@ -80,6 +80,8 @@ const seedDatabase = async () => {
     return newParcel;
   });
   const insertedParcels = await Promise.all(seedParcels);
-  console.log(insertedParcels)
+  console.log(insertedParcels);
+  // const updatedParcel = await Parcel.update({ pickupLocation: 'delta1' }, insertedParcels[0].id);
+  // console.log('updatedParcel', updatedParcel);
 };
 export default seedDatabase;

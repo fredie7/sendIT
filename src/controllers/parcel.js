@@ -11,21 +11,11 @@ const parcelController = {
   },
 
   editParcel: async (req, res) => {
-    const foundParcel = Parcel.editOrder(req.body, req.params.parcelId)
+    const foundParcel = await Parcel.getById(req.params.parcelId);
     if (!foundParcel) {
       return res.status(404).json({ error: 'parcel not found' });
     }
-    const updatedParcel = {
-      ...foundParcel,
-      pickupLocation: req.body.pickupLocation || foundParcel.pickupLocation,
-      deliveryLocation: req.body.deliveryLocation || foundParcel.deliveryLocation,
-      presentLocation: req.body.presentLocation || foundParcel.presentLocation,
-      receiverPhone: req.body.receiverPhone || foundParcel.receiverPhone,
-      receiverEmail: req.body.receiverEmail || foundParcel.receiverEmail,
-      description: req.body.description || foundParcel.description,
-      weight: req.body.weight || foundParcel.weight,
-      updatedAt: new Date(),
-    };
+    const updatedParcel = await Parcel.update(req.body);
     return res.status(200).json(updatedParcel);
   },
 
@@ -38,7 +28,7 @@ const parcelController = {
   },
 
   cancelParcelOrder: async (req, res) => {
-    const foundParcel = await Parcel.cancelOrder(req.body.status, req.params.parcelId);
+    const foundParcel = await Parcel.update(req.body.status, req.params.parcelId);
     console.log(foundParcel)
     if (!foundParcel) {
       return res.status(404).json({ error: 'parcel not found' });
@@ -50,7 +40,7 @@ const parcelController = {
   },
 
   changeParcelLocation: async (req, res) => {
-    const foundParcel = await Parcel.parcelLocation(req.body.pickupLocation, req.params.parcelId);
+    const foundParcel = await Parcel.update(req.body.pickupLocation, req.params.parcelId);
     if (!foundParcel) {
       return res.status(404).json({ error: 'parcel not found' });
     }
@@ -58,7 +48,8 @@ const parcelController = {
   },
 
   changeParcelDestination: async (req, res) => {
-    const foundParcel = await Parcel.parcelDestination(req.body.deliveryLocation, req.params.parcelId);
+    const foundParcel = await Parcel.update(req.body.deliveryLocation, req.params.parcelId);
+    console.log(foundParcel);
     if (!foundParcel) {
       return res.status(404).json({ error: 'parcel not found' });
     }
