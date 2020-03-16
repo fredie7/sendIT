@@ -43,8 +43,6 @@ const seedDatabase = async () => {
       receiverEmail: 'john@gmail.com',
       description: 'john dummy desc desc',
       weight: '12',
-      createdAt: new Date(),
-      updatedAt: new Date(),
       status: 'delivered',
     },
     {
@@ -56,8 +54,6 @@ const seedDatabase = async () => {
       receiverEmail: 'susan@gmail.com',
       description: 'susan dummy desc desc',
       weight: '16',
-      createdAt: new Date(),
-      updatedAt: new Date(),
       status: 'pending',
     },
     {
@@ -69,8 +65,6 @@ const seedDatabase = async () => {
       receiverEmail: 'peter@gmail.com',
       description: 'peter dummy desc desc',
       weight: '12',
-      createdAt: new Date(),
-      updatedAt: new Date(),
       status: 'pending',
     },
   ];

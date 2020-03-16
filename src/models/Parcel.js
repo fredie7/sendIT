@@ -25,10 +25,10 @@ class Parcel {
       data.receiverEmail,
       data.description,
       data.weight,
-      data.createdAt,
-      data.updatedAt,
+      new Date(),
+      new Date(),
       data.status,
-    ]
+    ];
 
     try {
       const { rows } = await db.query(createParcel, values);
@@ -58,17 +58,6 @@ class Parcel {
       return error;
     }
   }
-  
-  async getOneParcel(id) {
-    const text = 'SELECT * FROM parcels WHERE id = $1';
-    try {
-      const { rows } = await db.query(text, [id]);
-      return rows[0];
-    } catch (error) {
-      logger.error(error)
-      return error;
-    }
-  }
 
   async getAllParcels() {
     const text = 'SELECT * FROM parcels';
@@ -90,7 +79,7 @@ class Parcel {
       return error;
     }
   }
-
+  
   async update(data, id) {
     const fields = Object.keys(data);
     let setString = '';
