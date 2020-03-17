@@ -1,16 +1,12 @@
-import uuidV4 from 'uuid/v4';
-// import parcels from '../data/parcels';
 import Parcel from '../models/Parcel';
-import db from '../db';
-
 
 const parcelController = {
   createParcel: async (req, res) => {
     try {
-      const newParcel = await Parcel.create({...req.body, status: 'pending'});
+      const newParcel = await Parcel.create({ ...req.body, status: 'pending', createdBy: req.decoded.id });
       res.status(201).json(newParcel);
     } catch (error) {
-      return res.status(500).json({error: 'internal server error', stack: error});
+      return res.status(500).json({ error: 'internal server error', stack: error });
     }
   },
 
@@ -23,7 +19,7 @@ const parcelController = {
       const updatedParcel = await Parcel.update(req.body, req.params.parcelId);
       return res.status(200).json(updatedParcel);
     } catch (error) {
-      return res.status(500).json({ error: 'internal server error', stack: error })
+      return res.status(500).json({ error: 'internal server error', stack: error });
     }
   },
 
@@ -35,7 +31,7 @@ const parcelController = {
       }
       return res.status(200).json(foundParcel);
     } catch (error) {
-      return res.status(500).json({ error: 'internal server error', stack: error })
+      return res.status(500).json({ error: 'internal server error', stack: error });
     }
   },
 
@@ -57,14 +53,14 @@ const parcelController = {
 
   changeParcelLocation: async (req, res) => {
     try {
-      const foundParcel = await Parcel.getById(req.params.parcelId)
+      const foundParcel = await Parcel.getById(req.params.parcelId);
       if (!foundParcel) {
         return res.status(404).json({ error: 'parcel not found' });
       }
       if (foundParcel.status === 'delivered') {
         return res.status(401).json({ error: 'parcel has already been delivered' });
       }
-      const updatedParcel = await Parcel.update({ pickupLocation: req.body.pickupLocation }, req.params.parcelId);
+      const updatedParcel = await Parcel.update(req.body, req.params.parcelId);
       return res.status(200).json(updatedParcel);
     } catch (error) {
       return res.status(500).json({ error: 'internal server error', stack: error });
@@ -74,17 +70,17 @@ const parcelController = {
   changeParcelDestination: async (req, res) => {
     try {
       const foundParcel = await Parcel.getById(req.params.parcelId);
-      console.log(foundParcel);
       if (!foundParcel) {
         return res.status(404).json({ error: 'parcel not found' });
       }
       if (foundParcel.status === 'delivered') {
         return res.status(401).json({ error: 'parcel has already been delivered' });
       }
-      const updatedParcel = await Parcel.update({deliveryLocation: req.body.deliveryLocation }, req.params.parcelId);
+      const updatedParcel = await Parcel.update(req.body, req.params.parcelId);
+      console.log('updatedParcel:', updatedParcel);
       return res.status(200).json(updatedParcel);
     } catch (error) {
-      return res.status(500).json({ error: 'internal server error', stack: error })
+      return res.status(500).json({ error: 'internal server error', stack: error });
     }
   },
 

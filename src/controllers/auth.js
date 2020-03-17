@@ -1,9 +1,9 @@
-import uuidV4 from 'uuid/v4';
-// import data from '../data/users';
+import bcrypt from 'bcryptjs';
 import User from '../models/User';
+import hashPassword from '../services/hash';
 
 const jwt = require('jsonwebtoken');
-require('dotenv').config()
+require('dotenv').config();
 
 const jwtExpiryTime = 3600;
 
@@ -13,15 +13,16 @@ const authController = {
     if (existingUser) {
       return res.status(401).json({ error: 'user already exists' });
     }
-    const newUser = await User.create(req.body);
+    const newUser = await User.create({ ...req.body, password: hashPassword(req.body.password) });
     return res.status(201).json(newUser);
   },
 
-  signin: (req, res) => {
-    // const existingUser = data.find((user) => user.email === req.body.email && user.password === req.body.password);
+  signin: async (req, res) => {
     const { email, password } = req.body;
-    const existingUser = User.checkCredentials(email, password);
-    if (!existingUser) {
+    const existingUser = await User.getByField('email', email);
+    const isCorrectPassword = existingUser && bcrypt.compareSync(password, existingUser.password);
+
+    if (!isCorrectPassword) {
       return res.status(401).json({ error: 'user does not exist' });
     }
     const { id } = existingUser;

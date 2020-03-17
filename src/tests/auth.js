@@ -30,9 +30,9 @@ describe('/api/v1/auth/signup', () => {
 // signin "describe" block
 describe('/api/v1/auth/signin', () => {
   const newUser = {
-    name: 'emma',
-    email: 'emma@test.com',
-    password: 'emmapassword1',
+    name: 'John',
+    email: 'john@test.com',
+    password: 'password123',
   };
 
   // The before block is used here to allow us signup a user, who we can then attempt to signin
@@ -80,7 +80,7 @@ describe('/api/v1/auth/signin', () => {
 
   it('fails on wrong user credentials', (done) => {
     const user = {
-      email: 'emma@test.com',
+      email: 'jay@test.com',
       password: 'password123',
     };
     chai.request(app)
@@ -128,7 +128,6 @@ describe('/api/v1/auth/signin', () => {
   });
 
   it('email must contain an @ symbol', (done) => {
-    const emailMatch = /^[a-zA-Z]+@[a-zA-Z]+.+[a-zA-Z]$/;
     const user = {
       email: 'emmatest.com',
       password: 'emmapassword1',
@@ -142,4 +141,3 @@ describe('/api/v1/auth/signin', () => {
       });
   });
 });
-

@@ -1,28 +1,26 @@
 import dotenv from 'dotenv';
 import User from '../models/User';
 import Parcel from '../models/Parcel';
+import hashPassword from '../services/hash';
 
 dotenv.config();
-
-// const User = new UserModel();
-// const Parcel = new ParcelModel();
 
 const seedDatabase = async () => {
   const users = [
     {
       name: 'gabby',
       email: 'gabby@gmail.com',
-      password: 'gabbypassword',
+      password: hashPassword('gabbypassword'),
     },
     {
       name: 'tarik',
       email: 'tarik@gmail.com',
-      password: 'tarikpassword',
+      password: hashPassword('tarikpassword'),
     },
     {
       name: 'jizael',
       email: 'jizael@gmail.com',
-      password: 'jizaelpassword',
+      password: hashPassword('jizaelpassword'),
     },
   ];
 
@@ -31,7 +29,7 @@ const seedDatabase = async () => {
     return newUser;
   });
   const insertedUsers = await Promise.all(seedUsers);
-  console.log(insertedUsers)
+  console.log(insertedUsers);
 
   const parcels = [
     {
@@ -75,7 +73,5 @@ const seedDatabase = async () => {
   });
   const insertedParcels = await Promise.all(seedParcels);
   console.log(insertedParcels);
-  // const updatedParcel = await Parcel.update({ pickupLocation: 'delta1' }, insertedParcels[0].id);
-  // console.log('updatedParcel', updatedParcel);
 };
 export default seedDatabase;
