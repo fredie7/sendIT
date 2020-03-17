@@ -1,7 +1,7 @@
 import db from '../db';
 import logger from '../services/logger';
 
-class Parcels {
+class Parcel {
   async create(data) {
     const createParcel = `INSERT INTO parcels (
         "pickupLocation", 
@@ -25,10 +25,10 @@ class Parcels {
       data.receiverEmail,
       data.description,
       data.weight,
-      data.createdAt,
-      data.updatedAt,
+      new Date(),
+      new Date(),
       data.status,
-    ]
+    ];
 
     try {
       const { rows } = await db.query(createParcel, values);
@@ -57,8 +57,49 @@ class Parcels {
     } catch (error) {
       return error;
     }
-}
-      
+  }
+
+  async getAllParcels() {
+    const text = 'SELECT * FROM parcels';
+    try {
+      const { rows } = await db.query(text);
+      return rows;
+    } catch (error) {
+      return error;
+    }
+  }
+
+
+  async cancelOrder(field, id) {
+    const text = 'UPDATE parcels SET "status" = $1 WHERE id = $2 RETURNING *';
+    try {
+      const { rows } = await db.query(text, [field, id]);
+      return rows[0];
+    } catch (error) {
+      return error;
+    }
+  }
+  
+  async update(data, id) {
+    const fields = Object.keys(data);
+    let setString = '';
+    const placeHolders = [id];
+    fields.forEach((fieldName, index) => {
+      const placeHolderNumber = index + 2;
+      setString = `${setString}, "${fieldName}" = $${placeHolderNumber}`;
+      placeHolders.push(data[fieldName]);
+    });
+    setString = setString.slice(2);
+    const date = new Date().toUTCString();
+    setString = setString + `, "updatedAt" = '${date}'`;
+    const text = `UPDATE parcels SET ${setString} WHERE id = $1 RETURNING *`;
+    try {
+      const { rows } = await db.query(text, placeHolders);
+      return rows[0];
+    } catch (error) {
+      return error;
+    }
+  }
 }
 
-export default Parcels;
+export default new Parcel();

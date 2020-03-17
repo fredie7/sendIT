@@ -1,11 +1,11 @@
 import dotenv from 'dotenv';
-import UserModel from '../models/users';
-import ParcelModel from '../models/parcels';
+import User from '../models/User';
+import Parcel from '../models/Parcel';
 
 dotenv.config();
 
-const User = new UserModel();
-const Parcel = new ParcelModel();
+// const User = new UserModel();
+// const Parcel = new ParcelModel();
 
 const seedDatabase = async () => {
   const users = [
@@ -31,6 +31,7 @@ const seedDatabase = async () => {
     return newUser;
   });
   const insertedUsers = await Promise.all(seedUsers);
+  console.log(insertedUsers)
 
   const parcels = [
     {
@@ -42,8 +43,6 @@ const seedDatabase = async () => {
       receiverEmail: 'john@gmail.com',
       description: 'john dummy desc desc',
       weight: '12',
-      createdAt: new Date(),
-      updatedAt: new Date(),
       status: 'delivered',
     },
     {
@@ -55,8 +54,6 @@ const seedDatabase = async () => {
       receiverEmail: 'susan@gmail.com',
       description: 'susan dummy desc desc',
       weight: '16',
-      createdAt: new Date(),
-      updatedAt: new Date(),
       status: 'pending',
     },
     {
@@ -68,8 +65,6 @@ const seedDatabase = async () => {
       receiverEmail: 'peter@gmail.com',
       description: 'peter dummy desc desc',
       weight: '12',
-      createdAt: new Date(),
-      updatedAt: new Date(),
       status: 'pending',
     },
   ];
@@ -79,5 +74,8 @@ const seedDatabase = async () => {
     return newParcel;
   });
   const insertedParcels = await Promise.all(seedParcels);
+  console.log(insertedParcels);
+  // const updatedParcel = await Parcel.update({ pickupLocation: 'delta1' }, insertedParcels[0].id);
+  // console.log('updatedParcel', updatedParcel);
 };
 export default seedDatabase;
