@@ -16,7 +16,7 @@ describe('POST /api/v1/parcels', () => {
   const signupData = {
     name: user.name,
     email: user.email,
-    password: user.password
+    password: user.password,
   };
   const signinData = {
     name: user.name,
@@ -27,12 +27,12 @@ describe('POST /api/v1/parcels', () => {
   before(async () => {
     let res = await chai.request(app)
       .post('/api/v1/auth/signup')
-      .send(signupData)
+      .send(signupData);
     user.id = res.body.id;
 
     res = await chai.request(app)
       .post('/api/v1/auth/signin')
-      .send(signinData)
+      .send(signinData);
     user.token = res.body.token;
   });
 
@@ -44,7 +44,7 @@ describe('POST /api/v1/parcels', () => {
       receiverPhone: '08076323278',
       receiverEmail: 'felix@gmail.com',
       description: 'felix dummy desc desc',
-      weight: '10',
+      weight: 10,
     };
     chai.request(app)
       .post('/api/v1/parcels')
@@ -74,7 +74,7 @@ describe('POST /api/v1/parcels', () => {
       receiverPhone: '08076323278',
       receiverEmail: 'felix@gmail.com',
       description: 'felix dummy desc desc',
-      weight: '10',
+      weight: 10,
     };
 
     const errorMessages = {
@@ -98,7 +98,7 @@ describe('POST /api/v1/parcels', () => {
         })
         .end((err, res) => {
           res.should.have.status(422);
-          res.body.should.have.property('error').eql(errorMessages[field]);    
+          res.body.should.have.property('error').eql(errorMessages[field]);
           if (index === requestFields.length - 1) {
             done();
           }
@@ -114,7 +114,7 @@ describe('POST /api/v1/parcels', () => {
       receiverPhone: '08076323278',
       receiverEmail: 'receivermail.com',
       description: 'felix dummy desc desc',
-      weight: '10',
+      weight: 10,
     };
     chai.request(app)
       .post('/api/v1/parcels')
@@ -144,7 +144,7 @@ describe('PUT /api/v1/parcels/:parcelId', () => {
     receiverPhone: '08076543245',
     receiverEmail: 'john@gmail.com',
     description: 'john dummy desc desc',
-    weight: '12',
+    weight: 12,
   };
   const signupData = {
     name: user.name,
@@ -234,7 +234,7 @@ describe('PUT /api/v1/parcels/:parcelId', () => {
       receiverPhone: '08076543245',
       receiverEmail: 'john@gmail.com',
       description: 'john dummy desc desc',
-      weight: '12',
+      weight: 12,
     };
 
     const errorMessages = {
@@ -265,104 +265,151 @@ describe('PUT /api/v1/parcels/:parcelId', () => {
         });
     });
   });
+});
 
-  describe('PUT /api/parcels/parcelId/changeParcelLocation', () => {
-    const user = {
-      id: null,
-      token: null,
-      name: 'felix',
-      email: 'felix@email.com',
-      password: 'felix123',
+describe('PUT /api/parcels/parcelId/changeParcelLocation', () => {
+  const user = {
+    id: null,
+    token: null,
+    name: 'felix',
+    email: 'felix@email.com',
+    password: 'felix123',
+  };
+  const parcelData = {
+    pickupLocation: 'ikeja',
+    deliveryLocation: 'maryland',
+    presentLocation: 'ogba',
+    receiverPhone: '08076543245',
+    receiverEmail: 'john@gmail.com',
+    description: 'john dummy desc desc',
+    weight: 12,
+  };
+  const signUpData = {
+    name: user.name,
+    email: user.email,
+    password: user.password,
+  };
+  const signInData = {
+    email: user.email,
+    password: user.password,
+  };
+  before(async () => {
+    let res = await chai.request(app)
+      .post('/api/v1/auth/signup')
+      .send(signUpData);
+    user.id = res.body.id;
+
+    res = await chai.request(app)
+      .post('/api/v1/auth/signin')
+      .send(signInData);
+    user.token = res.body.token;
+
+    res = await chai.request(app)
+      .post('/api/v1/parcels')
+      .set('authorization', user.token)
+      .send(parcelData);
+    parcelData.id = res.body.id;
+    parcelData.createdBy = res.body.createdBy;
+  });
+
+  it('must change parcel location', (done) => {
+    const changeParcelLocation = {
+      presentLocation: 'adamawa',
     };
-    const parcelData = {
-      pickupLocation: 'ikeja',
-      deliveryLocation: 'maryland',
-      presentLocation: 'ogba',
-      receiverPhone: '08076543245',
-      receiverEmail: 'john@gmail.com',
-      description: 'john dummy desc desc',
-      weight: '12',
+    chai.request(app)
+      .put(`/api/v1/parcels/${parcelData.id}/changeLocation`)
+      .set('authorization', user.token)
+      .send(changeParcelLocation)
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.should.be.a('object');
+        res.body.should.have.property('createdBy');
+        res.body.createdBy.should.eql(user.id);
+        res.body.should.have.property('presentLocation');
+        res.body.should.have.property('pickupLocation');
+        res.body.should.have.property('deliveryLocation');
+        res.body.should.have.property('receiverPhone');
+        res.body.should.have.property('receiverEmail');
+        res.body.should.have.property('description');
+        res.body.should.have.property('weight');
+        res.body.presentLocation.should.eql(changeParcelLocation.presentLocation);
+        res.body.pickupLocation.should.eql(parcelData.pickupLocation);
+        res.body.deliveryLocation.should.eql(parcelData.deliveryLocation);
+        res.body.receiverPhone.should.eql(parcelData.receiverPhone);
+        res.body.receiverEmail.should.eql(parcelData.receiverEmail);
+        res.body.description.should.eql(parcelData.description);
+        res.body.weight.should.eql(parcelData.weight);
+        done();
+      });
+  });
+
+  it('fails when a wrong or non-existent parcelId is used in the request', (done) => {
+    chai.request(app)
+      .get('/api/v1/parcels/878dd/destination')
+      .end((err, res) => {
+        res.should.have.status(404);
+        done();
+      });
+  });
+
+  it('fails when no delivery location is provided', (done) => {
+    const changeDestination = {
+      deliveryLocation: '',
     };
-    const signUpData = {
-      name: user.name,
-      email: user.email,
-      password: user.password,
-    }
-    const signInData = {
-      email: user.email,
-      password: user.password,
-    }
-    before(async () => {
-      let res = await chai.request(app)
-        .post('/api/v1/auth/signup')
-        .send(signUpData);
-      user.id = res.body.id;
+    chai.request(app)
+      .put(`/api/v1/parcels/${parcelData.id}/destination`)
+      .send(changeDestination)
+      .end((err, res) => {
+        res.should.have.status(403);
+        done();
+      });
+  });
+});
 
-      res = await chai.request(app)
-        .post('/api/v1/auth/signin')
-        .send(signInData);
-      user.token = res.body.token;
-        
-      res = await chai.request(app)
-        .post('/api/v1/parcels')
-        .set('authorization', user.token)
-        .send(parcelData);
-      parcelData.id = res.body.id;
-      parcelData.createdBy = res.body.createdBy;
-    });
+describe('GET /api/v1/parcels', () => {
+  const user = {
+    id: null,
+    token: null,
+    email: 'felix3@test.com',
+    password: 'jayjay1',
+    name: 'felix',
+  };
+  const parcelData = {
+    pickupLocation: 'ikeja',
+    deliveryLocation: 'maryland',
+    presentLocation: 'ogba',
+    receiverPhone: '08076543245',
+    receiverEmail: 'john@gmail.com',
+    description: 'john dummy desc desc',
+    weight: 12,
+  };
+  const signupData = {
+    name: user.name,
+    email: user.email,
+    password: user.password,
+  };
+  const signinData = {
+    email: user.email,
+    password: user.password,
+  };
 
-    it('must change parcel location', (done) => {
-      const changeParcelLocation = {
-        presentLocation: 'adamawa', 
-      };
-      chai.request(app)
-        .put(`/api/v1/parcels/${parcelData.id}/changeLocation`)
-        .set('authorization', user.token)
-        .send(changeParcelLocation)
-        .end((err, res) => {
-          res.should.have.status(200);
-          res.body.should.be.a('object');
-          res.body.should.have.property('createdBy');
-          res.body.createdBy.should.eql(user.id);
-          res.body.should.have.property('presentLocation');
-          res.body.should.have.property('pickupLocation');
-          res.body.should.have.property('deliveryLocation');
-          res.body.should.have.property('receiverPhone');
-          res.body.should.have.property('receiverEmail');
-          res.body.should.have.property('description');
-          res.body.should.have.property('weight');
-          res.body.presentLocation.should.eql(changeParcelLocation.presentLocation);
-          res.body.pickupLocation.should.eql(parcelData.pickupLocation);
-          res.body.deliveryLocation.should.eql(parcelData.deliveryLocation);
-          res.body.receiverPhone.should.eql(parcelData.receiverPhone);
-          res.body.receiverEmail.should.eql(parcelData.receiverEmail);
-          res.body.description.should.eql(parcelData.description);
-          res.body.weight.should.eql(parcelData.weight);
-          done();
-        });
-    });
+  before(async () => {
+    let res = await chai.request(app)
+      .post('/api/v1/auth/signup')
+      .send(signupData);
+    user.id = res.body.id;
 
-    it('fails when a wrong or non-existent parcelId is used in the request', (done) => {
-      chai.request(app)
-        .get('/api/v1/parcels/878dd/destination')
-        .end((err, res) => {
-          res.should.have.status(404);
-          done();
-        });
-    });
+    res = await chai.request(app)
+      .post('/api/v1/auth/signin')
+      .send(signinData);
+    user.token = res.body.token;
 
-    it('fails when no delivery location is provided', (done) => {
-      const changeDestination = {
-        deliveryLocation: '',
-      };
-      chai.request(app)
-        .put(`/api/v1/parcels/${parcelData.id}/destination`)
-        .send(changeDestination)
-        .end((err, res) => {
-          res.should.have.status(403);
-          done();
-        });
-    });
+    res = await chai.request(app)
+      .post('/api/v1/parcels')
+      .set('authorization', user.token)
+      .send(parcelData);
+    parcelData.id = res.body.id;
+    parcelData.createdBy = res.body.createdBy;
   });
 
   it('should return all parcels', (done) => {
@@ -371,11 +418,11 @@ describe('PUT /api/v1/parcels/:parcelId', () => {
       .set('authorization', user.token)
       .end((err, res) => {
         res.should.have.status(200);
+        (res.body.length > 1).should.eql(true);
         done();
       });
   });
 });
-
 
 describe('GET /api/v1/parcels/:parcelId', () => {
   const user = {
@@ -392,7 +439,7 @@ describe('GET /api/v1/parcels/:parcelId', () => {
     receiverPhone: '08076543245',
     receiverEmail: 'john@gmail.com',
     description: 'john dummy desc desc',
-    weight: '12',
+    weight: 12,
   };
   const signupData = {
     name: user.name,
@@ -443,10 +490,20 @@ describe('GET /api/v1/parcels/:parcelId', () => {
   });
   it('fails when a wrong or missing parcel id is supplied in the request', (done) => {
     chai.request(app)
-      .get('/api/v1/parcels/890fh90')
+      .get('/api/v1/parcels/9fea225f-5198-4b8f-ba6c-24987994a43e')
       .set('authorization', user.token)
       .end((err, res) => {
         res.should.have.status(404);
+        done();
+      });
+  });
+
+  it('fails when non uuid parcel id is supplied in the request', (done) => {
+    chai.request(app)
+      .get('/api/v1/parcels/890fh90')
+      .set('authorization', user.token)
+      .end((err, res) => {
+        res.should.have.status(500);
         done();
       });
   });
@@ -478,18 +535,18 @@ describe('PUT /api/V1/parcels/parcelId/destination', () => {
     receiverPhone: '08076543245',
     receiverEmail: 'john@gmail.com',
     description: 'john dummy desc desc',
-    weight: '12',
+    weight: 12,
   };
 
   before(async () => {
     let res = await chai.request(app)
       .post('/api/v1/auth/signup')
-      .send(signUpData)
+      .send(signUpData);
     user.id = res.body.id;
 
     res = await chai.request(app)
       .post('/api/v1/auth/signin')
-      .send(signInData)
+      .send(signInData);
     user.token = res.body.token;
 
     res = await chai.request(app)
