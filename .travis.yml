@@ -12,6 +12,9 @@ before_script:
 
 script:
   - nyc --reporter=lcov npm test
+  - npm run migrate
 
 after_success:
   - npm run coveralls
+
+  
