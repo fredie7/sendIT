@@ -17,6 +17,18 @@ const authController = {
     return res.status(201).json(newUser);
   },
 
+  // signup: async (req, res) => {
+  //   try {
+  //     const existingUser = await User.getByField('email', req.body.email);
+  //     if (!existingUser) {
+  //       const newUser = await User.create({ ...req.body, password: hashPassword(req.body.password) });
+  //       return res.status(201).json(newUser);
+  //     }
+  //   } catch (error) {
+  //     return res.status(401).json({ error: 'user already exists', stack: error });
+  //   }
+  // },
+
   signin: async (req, res) => {
     const { email, password } = req.body;
     const existingUser = await User.getByField('email', email);
@@ -25,11 +37,11 @@ const authController = {
     if (!isCorrectPassword) {
       return res.status(401).json({ error: 'user does not exist' });
     }
-    const { id } = existingUser;
+    const { id, name } = existingUser;
     const token = jwt.sign({ id }, process.env.JWT_SECRET, {
       expiresIn: jwtExpiryTime,
     });
-    return res.status(200).json({ token });
+    return res.status(200).json({ token, id, name });
   },
 };
 export default authController;

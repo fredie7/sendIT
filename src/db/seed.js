@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import User from '../models/User';
+import Admin from '../models/admin'
 import Parcel from '../models/Parcel';
 import hashPassword from '../services/hash';
 
@@ -11,16 +12,19 @@ const seedDatabase = async () => {
       name: 'gabby',
       email: 'gabby@gmail.com',
       password: hashPassword('gabbypassword'),
+      isAdmin: true,
     },
     {
       name: 'tarik',
       email: 'tarik@gmail.com',
       password: hashPassword('tarikpassword'),
+      isAdmin: true,
     },
     {
       name: 'jizael',
       email: 'jizael@gmail.com',
       password: hashPassword('jizaelpassword'),
+      isAdmin: true,
     },
   ];
 
@@ -30,6 +34,31 @@ const seedDatabase = async () => {
   });
   const insertedUsers = await Promise.all(seedUsers);
   console.log(insertedUsers);
+
+  const admins = [
+    {
+      name: 'kabby',
+      email: 'kabby@gmail.com',
+      password: hashPassword('kabbypassword'),
+    },
+    {
+      name: 'karik',
+      email: 'karik@gmail.com',
+      password: hashPassword('karikpassword'),
+    },
+    {
+      name: 'kizael',
+      email: 'kizael@gmail.com',
+      password: hashPassword('kizaelpassword'),
+    },
+  ];
+
+  const seedAdmins = admins.map(async (adminData) => {
+    const newAdmin = await Admin.create(adminData);
+    return newAdmin;
+  });
+  const insertedAdmins = await Promise.all(seedAdmins);
+  console.log(insertedAdmins);
 
   const parcels = [
     {

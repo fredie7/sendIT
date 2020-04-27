@@ -41,6 +41,12 @@ class Parcel {
     return rows[0];
   }
 
+  async getBycreatedBy(createdBY) {
+    const text = 'SELECT * FROM parcels WHERE createdBY = $1';
+    const { rows } = await db.query(text, [createdBY]);
+    return rows[0];
+  }
+
   async getByField(field, value) {
     const text = `SELECT * FROM parcels WHERE '${field}' = $1`;
     const { rows } = await db.query(text, [value]);

@@ -92,6 +92,19 @@ const parcelController = {
       return res.status(500).json({ error: 'internal server error', stack: error })
     }
   },
+
+  getUserProfile: async (req, res) => {
+    try {
+      const foundParcels = await Parcel.getBycreatedBy(req.params.parcelId);
+      console.log(foundParcels);
+      if (!foundParcels) {
+        return res.status(404).json({ error: 'no parcels found' });
+      }
+      return res.status(200).json(foundParcels);
+    } catch (error) {
+      return res.status(500).json({ error: 'internal server error', stack: error });
+    }
+  },
 };
 
 export default parcelController;
