@@ -67,7 +67,7 @@ class Parcel {
 
   async getAllDeliveredParcels() {
     const text = "SELECT * FROM parcels WHERE status = 'delivered' ";
-    const { rows } = await db.query(text);
+    const { rows } = await db.query(text)
     return rows;
   }
 
