@@ -53,8 +53,26 @@ class Parcel {
     return rows[0];
   }
 
+  async getAllUserParcels() {
+    const text = 'SELECT * FROM parcels';
+    const { rows } = await db.query(text);
+    return rows;
+  }
+
   async getAllParcels() {
     const text = 'SELECT * FROM parcels';
+    const { rows } = await db.query(text);
+    return rows;
+  }
+
+  async getAllDeliveredParcels() {
+    const text = "SELECT * FROM parcels WHERE status = 'delivered' ";
+    const { rows } = await db.query(text);
+    return rows;
+  }
+
+  async getAllPendingParcels() {
+    const text = 'SELECT * FROM parcels WHERE "status" = "pending" RETURNING *';
     const { rows } = await db.query(text);
     return rows;
   }

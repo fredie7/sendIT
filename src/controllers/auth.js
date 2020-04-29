@@ -13,21 +13,9 @@ const authController = {
     if (existingUser) {
       return res.status(401).json({ error: 'user already exists' });
     }
-    const newUser = await User.create({ ...req.body, password: hashPassword(req.body.password) });
+    const newUser = await User.create({ ...req.body, isAdmin: false, password: hashPassword(req.body.password) });
     return res.status(201).json(newUser);
   },
-
-  // signup: async (req, res) => {
-  //   try {
-  //     const existingUser = await User.getByField('email', req.body.email);
-  //     if (!existingUser) {
-  //       const newUser = await User.create({ ...req.body, password: hashPassword(req.body.password) });
-  //       return res.status(201).json(newUser);
-  //     }
-  //   } catch (error) {
-  //     return res.status(401).json({ error: 'user already exists', stack: error });
-  //   }
-  // },
 
   signin: async (req, res) => {
     const { email, password } = req.body;
@@ -37,11 +25,12 @@ const authController = {
     if (!isCorrectPassword) {
       return res.status(401).json({ error: 'user does not exist' });
     }
-    const { id, name } = existingUser;
-    const token = jwt.sign({ id }, process.env.JWT_SECRET, {
+    const { id, name, isAdmin } = existingUser;
+    // console.log('existingUser', existingUser);
+    const token = jwt.sign({ id, isAdmin }, process.env.JWT_SECRET, {
       expiresIn: jwtExpiryTime,
     });
-    return res.status(200).json({ token, id, name });
+    return res.status(200).json({ token, id, name, isAdmin });
   },
 };
 export default authController;

@@ -84,9 +84,9 @@ const parcelController = {
     }
   },
 
-  getAllParcels: async (req, res) => {
+  getAllUserParcels: async (req, res) => {
     try {
-      const parcels = await Parcel.getAllParcels();
+      const parcels = await Parcel.getAllUserParcels();
       return res.status(200).json(parcels);
     } catch (error) {
       return res.status(500).json({ error: 'internal server error', stack: error })
@@ -103,6 +103,42 @@ const parcelController = {
       return res.status(200).json(foundParcels);
     } catch (error) {
       return res.status(500).json({ error: 'internal server error', stack: error });
+    }
+  },
+
+  getAllParcels: async (req, res) => {
+    try {
+      const parcels = await Parcel.getAllParcels();
+      return res.status(200).json(parcels);
+    } catch (error) {
+      return res.status(500).json({ error: 'internal server error' });
+    }
+  },
+  // getUserDeliveredParcels
+  getDeliveredParcels: async (req, res) => {
+    try {
+      const parcels = await Parcel.getAllDeliveredParcels();
+      console.log(parcels)
+      return res.status(200).json(parcels);
+    } catch (error) {
+      return res.status(500).json({ error: 'internal server error' });
+    }
+  },
+  getPendingOrders: async (req, res) => {
+    try {
+      const parcels = await Parcel.getAllPendingOrders();
+      return res.status(200).json(parcels);
+    } catch (error) {
+      return res.status(500).json({ error: 'internal server error' });
+    }
+  },
+  // All => admin
+  getAllCanceledOrders: async (req, res) => {
+    try {
+      const parcels = await Parcel.getAllCancelledOrders();
+      return res.status(200).json(parcels);
+    } catch (error) {
+      return res.status(500).json({ error: 'internal server error' });
     }
   },
 };
