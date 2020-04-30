@@ -10,7 +10,6 @@ import { Pool } from 'pg';
 import authRoute from './routers/auth';
 import parcelRoutes from './routers/parcel';
 import userRoutes from './routers/user';
-import adminRoutes from './routers/admin/adminAuth';
 
 const app = express();
 
@@ -24,7 +23,6 @@ app.use(cors());
 app.use('/api/v1/auth', authRoute);
 app.use('/api/v1', parcelRoutes);
 app.use('/api/v1', userRoutes);
-app.use('/api/v1/adminAuth', adminRoutes);
 
 app.get('/', (req, res) => res.status(200).json({ mesage: 'app started......' }));
 
