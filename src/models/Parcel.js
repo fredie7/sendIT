@@ -41,12 +41,6 @@ class Parcel {
     return rows[0];
   }
 
-  async getBycreatedBy(createdBY) {
-    const text = 'SELECT * FROM parcels WHERE createdBY = $1';
-    const { rows } = await db.query(text, [createdBY]);
-    return rows[0];
-  }
-
   async getByField(field, value) {
     const text = `SELECT * FROM parcels WHERE '${field}' = $1`;
     const { rows } = await db.query(text, [value]);
@@ -61,18 +55,6 @@ class Parcel {
 
   async getAllParcels() {
     const text = 'SELECT * FROM parcels';
-    const { rows } = await db.query(text);
-    return rows;
-  }
-
-  async getAllDeliveredParcels() {
-    const text = "SELECT * FROM parcels WHERE status = 'delivered' ";
-    const { rows } = await db.query(text)
-    return rows;
-  }
-
-  async getAllPendingParcels() {
-    const text = 'SELECT * FROM parcels WHERE "status" = "pending" RETURNING *';
     const { rows } = await db.query(text);
     return rows;
   }

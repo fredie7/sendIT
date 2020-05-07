@@ -16,9 +16,10 @@ const {
   cancelParcelOrder,
   changeParcelLocation,
   changeParcelDestination,
-  getAllUserParcels,
+  getUserParcels,
   getDeliveredParcels,
   getPendingOrders,
+  getAllParcels,
 } = parcelController;
 
 
@@ -30,9 +31,11 @@ router.get('/parcels/:parcelId', verifyToken, getOneParcel);
 router.put('/parcels/:parcelId/cancel', verifyToken, verifyAsOwner, cancelParcelOrder);
 router.put('/parcels/:parcelId/changeLocation', verifyToken, verifyAsAdmin, parcelLocationValidation, changeParcelLocation);
 router.put('/parcels/:parcelId/destination', verifyToken, verifyAsOwner, parceDestinationlValidation, changeParcelDestination);
-router.get('/parcels', verifyToken, getAllUserParcels);
+// check the next route
+router.get('/parcelss', verifyToken, getUserParcels);
 router.get('/parcels/delivered', verifyToken, getDeliveredParcels);
 router.get('/parcels/pending', verifyToken, getPendingOrders);
+router.get('/parcels', getAllParcels);
 
 
 module.exports = router;

@@ -84,23 +84,14 @@ const parcelController = {
     }
   },
 
-  getAllUserParcels: async (req, res) => {
+  getUserParcels: async (req, res) => {
     try {
-      const parcels = await Parcel.getAllUserParcels();
-      return res.status(200).json(parcels);
-    } catch (error) {
-      return res.status(500).json({ error: 'internal server error', stack: error })
-    }
-  },
-
-  getUserProfile: async (req, res) => {
-    try {
-      const foundParcels = await Parcel.getBycreatedBy(req.params.parcelId);
-      console.log(foundParcels);
-      if (!foundParcels) {
+      const foundUserParcels = await Parcel.getByField('createdBy', req.decoded.id);
+      console.log(foundUserParcels);
+      if (!foundUserParcels) {
         return res.status(404).json({ error: 'no parcels found' });
       }
-      return res.status(200).json(foundParcels);
+      return res.status(200).json(foundUserParcels);
     } catch (error) {
       return res.status(500).json({ error: 'internal server error', stack: error });
     }
@@ -117,8 +108,8 @@ const parcelController = {
   // getUserDeliveredParcels
   getDeliveredParcels: async (req, res) => {
     try {
-      const parcels = await Parcel.getAllDeliveredParcels();
-      console.log(parcels)
+      const parcels = await Parcel.getByField('status', 'delivered');
+      // console.log(parcels)
       return res.status(200).json(parcels);
     } catch (error) {
       return res.status(500).json({ error: 'internal server error' });
@@ -126,7 +117,7 @@ const parcelController = {
   },
   getPendingOrders: async (req, res) => {
     try {
-      const parcels = await Parcel.getAllPendingOrders();
+      const parcels = await Parcel.getByField('status', 'pending');
       return res.status(200).json(parcels);
     } catch (error) {
       return res.status(500).json({ error: 'internal server error' });
@@ -135,7 +126,7 @@ const parcelController = {
   // All => admin
   getAllCanceledOrders: async (req, res) => {
     try {
-      const parcels = await Parcel.getAllCancelledOrders();
+      const parcels = await Parcel.getByField('status', 'cancelled');
       return res.status(200).json(parcels);
     } catch (error) {
       return res.status(500).json({ error: 'internal server error' });
