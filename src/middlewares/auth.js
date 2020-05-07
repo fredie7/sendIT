@@ -13,7 +13,23 @@ const verifyToken = (req, res, next) => {
       return res.status(403).json({ error: 'unauthorized' });
     }
     req.decoded = authData;
+    console.log(req.decoded)
     next();
   });
 };
+
+export const verifyAsAdmin = (req, res, next) => {
+  if (!req.decoded.isAdmin) {
+    return res.status(403).json({ error: 'user unauthorized' });
+  }
+  next();
+};
+
+export const verifyAsOwner = (req, res, next) => {
+  if (!req.decoded.id) {
+    return res.status(403).json({ error: 'user unauthorized' });
+  }
+  next();
+}
+
 export default verifyToken;

@@ -12,7 +12,8 @@ CREATE TABLE IF NOT EXISTS users (
   "id" UUID PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
   "name" VARCHAR(100) NOT NULL,
   "email" VARCHAR(100) UNIQUE NOT NULL,
-  "password" VARCHAR(100) NOT NULL
+  "password" VARCHAR(100) NOT NULL,
+  "isAdmin" BOOLEAN NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS parcels (
@@ -21,8 +22,9 @@ CREATE TABLE IF NOT EXISTS parcels (
   "deliveryLocation" VARCHAR(100) NOT NULL,
   "description" VARCHAR(100) NOT NULL,
   "receiverPhone" VARCHAR(20) NOT NULL,
-  "receiverEmail" VARCHAR(100) UNIQUE NOT NULL,
+  "receiverEmail" VARCHAR(100) NOT NULL,
   "presentLocation" VARCHAR(100) NOT NULL,
+  "createdBy" UUID NOT NULL,
   "weight" INT NOT NULL,
   "status" VARCHAR(20) NOT NULL,
   "createdAt" VARCHAR(40) NOT NULL,

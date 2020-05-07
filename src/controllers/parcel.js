@@ -1,108 +1,137 @@
-import uuidV4 from 'uuid/v4';
-import parcels from '../data/parcels';
-
+import Parcel from '../models/Parcel';
 
 const parcelController = {
-  createParcel: ((req, res) => {
-    console.log(parcels)
-    const newParcel = {
-      id: uuidV4(),
-      createdBy: req.decoded.id,
-      pickupLocation: req.body.pickupLocation,
-      deliveryLocation: req.body.deliveryLocation,
-      presentLocation: req.body.presentLocation,
-      receiverPhone: req.body.receiverPhone,
-      receiverEmail: req.body.receiverEmail,
-      description: req.body.description,
-      weight: req.body.weight,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      status: 'pending',
-    };
-    parcels.push(newParcel);
-    res.status(201).json(newParcel);
-  }),
-
-  editParcel: ((req, res) => {
-    const foundParcel = parcels.find((parcel) => parcel.id === req.params.parcelId);
-    if (!foundParcel) {
-      return res.status(404).json({ error: 'parcel not found' });
+  createParcel: async (req, res) => {
+    try {
+      const newParcel = await Parcel.create({ ...req.body, status: 'pending', createdBy: req.decoded.id });
+      res.status(201).json(newParcel);
+    } catch (error) {
+      return res.status(500).json({ error: 'internal server error', stack: error });
     }
-    const updatedParcel = {
-      ...foundParcel,
-      pickupLocation: req.body.pickupLocation || foundParcel.pickupLocation,
-      deliveryLocation: req.body.deliveryLocation || foundParcel.deliveryLocation,
-      presentLocation: req.body.presentLocation || foundParcel.presentLocation,
-      receiverPhone: req.body.receiverPhone || foundParcel.receiverPhone,
-      receiverEmail: req.body.receiverEmail || foundParcel.receiverEmail,
-      description: req.body.description || foundParcel.description,
-      weight: req.body.weight || foundParcel.weight,
-      updatedAt: new Date(),
-    };
-    const parcelIndex = parcels.indexOf(foundParcel);
-    parcels.splice(parcelIndex, 1, updatedParcel);
-    return res.status(200).json(updatedParcel);
-  }),
+  },
 
-  getOneParcel: ((req, res) => {
-    const foundParcel = parcels.find((parcel) => parcel.id === req.params.parcelId);
-    if (!foundParcel) {
-      return res.status(404).json({ error: 'parcel not found' });
+  editParcel: async (req, res) => {
+    try {
+      const foundParcel = await Parcel.getById(req.params.parcelId);
+      if (!foundParcel) {
+        return res.status(404).json({ error: 'parcel not found' });
+      }
+      const updatedParcel = await Parcel.update(req.body, req.params.parcelId);
+      return res.status(200).json(updatedParcel);
+    } catch (error) {
+      return res.status(500).json({ error: 'internal server error', stack: error });
     }
-    return res.status(200).json(foundParcel);
-  }),
+  },
 
-  cancelParcelOrder: ((req, res) => {
-    const foundParcel = parcels.find((parcel) => parcel.id === req.params.parcelId);
-    console.log(foundParcel)
-    if (!foundParcel) {
-      return res.status(404).json({ error: 'parcel not found' });
+  getOneParcel: async (req, res) => {
+    try {
+      const foundParcel = await Parcel.getById(req.params.parcelId);
+      if (!foundParcel) {
+        return res.status(404).json({ error: 'parcel not found' });
+      }
+      return res.status(200).json(foundParcel);
+    } catch (error) {
+      return res.status(500).json({ error: 'internal server error', stack: error });
     }
+  },
 
-    if (foundParcel.status === 'delivered') {
-      return res.status(401).json({ error: 'parcel has already been delivered' });
+  cancelParcelOrder: async (req, res) => {
+    try {
+      const foundParcel = await Parcel.getById(req.params.parcelId);
+      if (!foundParcel) {
+        return res.status(404).json({ error: 'parcel not found' });
+      }
+      if (foundParcel.status === 'delivered') {
+        return res.status(401).json({ error: 'parcel has already been delivered' });
+      }
+      const updatedParcel = await Parcel.update({ status: 'cancelled' }, req.params.parcelId);
+      return res.status(200).json(updatedParcel);
+    } catch (error) {
+      return res.status(500).json({ error: 'internal server error', status: error });
     }
-    const updatedParcel = {
-      ...foundParcel,
-      status: 'cancelled',
-    };
-    const parcelIndex = parcels.indexOf(foundParcel);
-    parcels.splice(parcelIndex, 1, updatedParcel);
-    return res.status(200).json(updatedParcel);
-  }),
+  },
 
-  changeParcelLocation: ((req, res) => {
-    const foundParcel = parcels.find((parcel) => parcel.id === req.params.parcelId)
-    if (!foundParcel) {
-      return res.status(404).json({ error: 'parcel not found' })
+  changeParcelLocation: async (req, res) => {
+    try {
+      const foundParcel = await Parcel.getById(req.params.parcelId);
+      if (!foundParcel) {
+        return res.status(404).json({ error: 'parcel not found' });
+      }
+      if (foundParcel.status === 'delivered') {
+        return res.status(401).json({ error: 'parcel has already been delivered' });
+      }
+      const updatedParcel = await Parcel.update(req.body, req.params.parcelId);
+      return res.status(200).json(updatedParcel);
+    } catch (error) {
+      return res.status(500).json({ error: 'internal server error', stack: error });
     }
-    const updatedParcel = {
-      ...foundParcel,
-      presentLocation: req.body.presentLocation,
+  },
+
+  changeParcelDestination: async (req, res) => {
+    try {
+      const foundParcel = await Parcel.getById(req.params.parcelId);
+      if (!foundParcel) {
+        return res.status(404).json({ error: 'parcel not found' });
+      }
+      if (foundParcel.status === 'delivered') {
+        return res.status(401).json({ error: 'parcel has already been delivered' });
+      }
+      const updatedParcel = await Parcel.update(req.body, req.params.parcelId);
+      console.log('updatedParcel:', updatedParcel);
+      return res.status(200).json(updatedParcel);
+    } catch (error) {
+      return res.status(500).json({ error: 'internal server error', stack: error });
     }
-    const parcelIndex = parcels.indexOf(foundParcel);
-    parcels.splice(parcelIndex, 1, updatedParcel)
-    return res.status(200).json(updatedParcel);
-  }),
+  },
 
-  changeParcelDestination: ((req, res) => {
-    const foundParcel = parcels.find((parcel) => parcel.id === req.params.parcelId);
-    if (!foundParcel) {
-      return res.status(404).json({ error: 'parcel not found' });
+  getUserParcels: async (req, res) => {
+    try {
+      const foundUserParcels = await Parcel.getByField('createdBy', req.decoded.id);
+      console.log(foundUserParcels);
+      if (!foundUserParcels) {
+        return res.status(404).json({ error: 'no parcels found' });
+      }
+      return res.status(200).json(foundUserParcels);
+    } catch (error) {
+      return res.status(500).json({ error: 'internal server error', stack: error });
     }
-    const updatedParcel = {
-      ...foundParcel,
-      deliveryLocation: req.body.deliveryLocation,
-    };
-    const parcelIndex = parcels.indexOf(foundParcel);
-    parcels.splice(parcelIndex, 1, updatedParcel);
-    return res.status(200).json(updatedParcel);
-  }),
+  },
 
-  getAllParcels: ((req, res) => {
-    return res.status(200).json(parcels);
-  }),
-
+  getAllParcels: async (req, res) => {
+    try {
+      const parcels = await Parcel.getAllParcels();
+      return res.status(200).json(parcels);
+    } catch (error) {
+      return res.status(500).json({ error: 'internal server error' });
+    }
+  },
+  // getUserDeliveredParcels
+  getDeliveredParcels: async (req, res) => {
+    try {
+      const parcels = await Parcel.getByField('status', 'delivered');
+      // console.log(parcels)
+      return res.status(200).json(parcels);
+    } catch (error) {
+      return res.status(500).json({ error: 'internal server error' });
+    }
+  },
+  getPendingOrders: async (req, res) => {
+    try {
+      const parcels = await Parcel.getByField('status', 'pending');
+      return res.status(200).json(parcels);
+    } catch (error) {
+      return res.status(500).json({ error: 'internal server error' });
+    }
+  },
+  // All => admin
+  getAllCanceledOrders: async (req, res) => {
+    try {
+      const parcels = await Parcel.getByField('status', 'cancelled');
+      return res.status(200).json(parcels);
+    } catch (error) {
+      return res.status(500).json({ error: 'internal server error' });
+    }
+  },
 };
 
 export default parcelController;
